@@ -1,0 +1,18 @@
+{% extends "nexus/base.html" %}
+
+{% block heading %}
+    Dashboard
+{% endblock %}
+
+{% block content %}
+    {% for title, content in modules %}
+        <div class="dashboard-module">
+            <div class="dashboard-module-title">
+                {{ title }}
+            </div>
+            <div class="dashboard-module-content">
+                {{ content }}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

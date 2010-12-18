@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}Nexus{% endblock %}</title>
+
+        <link rel="stylesheet" href="{% url nexus-media 'css/nexus.css' %}">
+        <link rel="stylesheet" href="{% url nexus-media 'css/facebox.css' %}">
+        <link href='//fonts.googleapis.com/css?family=Yanone+Kaffeesatz:light,regular&amp;subset=latin' rel='stylesheet'>
+        <link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'>
+
+        <script>
+            var GARGOYLE = {
+                facebox: {
+                    loadingImage: "{% url nexus-media 'img/facebox/loading.gif' %}",
+                    closeImage:     "{% url nexus-media 'img/facebox/closelabel.png' %}"
+                }
+            };
+        </script>
+
+        <script src="{% url nexus-media 'js/lib/jquery.js' %}"></script>
+        <script src="{% url nexus-media 'js/lib/jquery.tmpl.js' %}"></script>
+        <script src="{% url nexus-media 'js/lib/facebox/facebox.js' %}"></script>
+        <script src="{% url nexus-media 'js/nexus.js' %}"></script>
+    </head>
+
+    <body>
+        <div id="header">
+            <div class="wrapper">
+                <h1>Nexus</h1>
+                <h2>{% block heading %}Dashboard{% endblock %}</h2>
+                <ul class="nav" id="account">
+                    {% if request.user.is_authenticated %}
+                            <li><a href="{% url nexus-logout %}">Logout</a>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        {% block container %}
+            <div id="container">
+                <div class="wrapper">
+                    <div id="status">Saving...</div>
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        {% endblock %}
+
+        <div id="footer">
+            <div class="wrapper">
+                Nexus | Powered by sexy Django magic | Conjured up by the <a href="http://code.disqus.com">DISQUS</a> team and other noble <a href="https://github.com/dcramer/nexus/contributors">sorcerers</a>.
+            </div>
+        </div>
+    </body>
+</html>
