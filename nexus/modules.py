@@ -14,8 +14,11 @@ class NexusModule(object):
             context_instance=context_instance
         )
     
-    def render_to_response(self, *args, **kwargs):
-        return self.site.render_to_response(*args, **kwargs)
+    def render_to_response(self, template, context={}, request=None):
+        context.update({
+            'module_title': self.get_title(),
+        })
+        return self.site.render_to_response(template, context, request)
 
     def as_view(self, *args, **kwargs):
         return self.site.as_view(*args, **kwargs)
