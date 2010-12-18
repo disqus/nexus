@@ -45,6 +45,14 @@
             <div id="container">
                 <div class="wrapper">
                     <div id="status">Saving...</div>
+                    {% block trail %}
+                    <ul id="breadcrumbs">
+                        <li><a href="{% url nexus %}">Nexus</a></li>
+                        {% for title, link in trail_bits %}
+                            <li><a href="{{ link }}">{{ title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% endblock %}
                     {% block content %}
                     {% endblock %}
                 </div>

@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext, Context
 
@@ -17,6 +18,7 @@ class NexusModule(object):
     def render_to_response(self, template, context={}, request=None):
         context.update({
             'module_title': self.get_title(),
+            'trail_bits': self.get_trail(request),
         })
         return self.site.render_to_response(template, context, request)
 
@@ -33,3 +35,9 @@ class NexusModule(object):
         from django.conf.urls.defaults import patterns
 
         return patterns('')
+
+    def get_trail(self, request):
+        return [
+            (self.get_title(), reverse(self.home_url)),
+        ]
+

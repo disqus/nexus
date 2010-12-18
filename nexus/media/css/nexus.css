@@ -290,6 +290,33 @@ input[type=text], input[type=password], select, textarea {
 .nav li { display: inline; }
 .nav li a { display: inline-block; }
 
+/* breadcrumbs */
+
+#breadcrumbs {
+    font-size: 0.9em;
+    height: 16px;
+    line-height: 16px;
+    margin: 0 0 20px;
+}
+#breadcrumbs li {
+    list-style: none;
+    display: inline;
+    float: left;
+}
+#breadcrumbs a {
+    font-weight: normal;
+    background: url('../img/breadcrumb.png') right center no-repeat;
+    padding: 0 12px 0 0;
+    margin: 0 8px 0 0;
+}
+#breadcrumbs li:last-child a {
+    background: none;
+    padding-right: 0;
+    margin-right: 0;
+    font-weight: bold;
+    text-decoration: none;
+}
+
 /* dashboard styles */
 
 .dashboard-module {
