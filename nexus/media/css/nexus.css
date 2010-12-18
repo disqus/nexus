@@ -78,12 +78,22 @@ input[type=text], input[type=password], select, textarea {
 }
 
 #header h1 {
-    background-image: url("../img/logo.png");
     margin: -5px 0 -10px;
     padding: 5px 0 10px;
     background-repeat: no-repeat;
     background-position: top middle;
     padding-left: 54px;
+}
+
+#header h1 img {
+    position: absolute;
+    top: -30px;
+    left: -70px;
+    z-index: 999;
+    width: 107px;
+    height: 106px;
+    display: block;
+
 }
 
 #header h2 {

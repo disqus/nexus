@@ -31,7 +31,10 @@
     <body>
         <div id="header">
             <div class="wrapper">
-                <h1>Nexus</h1>
+                <h1>
+                    <img src="{% url nexus-media 'img/nexus_logo.png' %}" alt="" height="106" width="107"/>
+                    Nexus
+                </h1>
                 <h2>{% block heading %}Dashboard{% endblock %}</h2>
                 <ul class="nav" id="account">
                     {% if request.user.is_authenticated %}
