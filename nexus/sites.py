@@ -14,16 +14,18 @@ import os.path
 NEXUS_ROOT = os.path.dirname(__file__)
 
 class NexusSite(object):
-    _registry = set()
+    _registry = {}
 
-    def register(self, module):
+    def register(self, module, namespace=None):
         if callable(module):
             module = module()
         module.site = self
-        self._registry.add(module)
+        if not namespace:
+            namespace = hash(module)
+        self._registry[namespace] = module
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url
+        from django.conf.urls.defaults import patterns, url, include
 
         urlpatterns = patterns('',
             url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
@@ -35,8 +37,10 @@ class NexusSite(object):
             url(r'^login/$', self.login, name='nexus-login'),
             url(r'^logout/$', self.as_view(self.logout), name='nexus-logout'),
         )
-        for module in self._registry:
-            urlpatterns += module.get_urls()
+        for namespace, module in self._registry.iteritems():
+            urlpatterns += patterns('',
+                url(r'^%s/' % namespace, include(module.get_urls())),
+            )
         
         return urlpatterns
 
@@ -117,13 +121,17 @@ class NexusSite(object):
     def dashboard(self, request):
         "Basic dashboard panel"
         # TODO: these should be ajax
-        modules = []
-        for module in self._registry:
+        module_set = []
+        link_set = []
+        for module in self._registry.itervalues():
             if hasattr(module, 'render_on_dashboard'):
-                modules.append((module.get_title(), module.render_on_dashboard(request)))
+                module_set.append((module.get_dashboard_title(), module.render_on_dashboard(request)))
+            if module.home_url:
+                link_set.append((module.get_title(), reverse(module.home_url)))
         
         return self.render_to_response('nexus/dashboard.html', {
-            'modules': modules,
+            'module_set': module_set,
+            'link_set': link_set,
         }, request)
 
 # setup the default site

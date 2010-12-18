@@ -5,7 +5,14 @@
 {% endblock %}
 
 {% block content %}
-    {% for title, content in modules %}
+    {% if link_set %}
+        <ul>
+            {% for title, link in link_set %}
+                <li><a href="{{ link }}">{{ title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% for title, content in module_set %}
         <div class="dashboard-module">
             <div class="dashboard-module-title">
                 {{ title }}
