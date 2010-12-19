@@ -5,8 +5,8 @@
         <meta charset="utf-8">
         <title>{% block title %}{% if title %}{{ title }} | {% endif %}Nexus{% endblock %}</title>
 
-        <link rel="stylesheet" href="{{ media_prefix }}css/nexus.css">
-        <link rel="stylesheet" href="{{ media_prefix }}css/facebox.css">
+        <link rel="stylesheet" href="{{ nexus_media_prefix }}css/nexus.css">
+        <link rel="stylesheet" href="{{ nexus_media_prefix }}css/facebox.css">
         <link href='//fonts.googleapis.com/css?family=Yanone+Kaffeesatz:light,regular&amp;subset=latin' rel='stylesheet'>
         <link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'>
 
@@ -15,16 +15,16 @@
         <script>
             var GARGOYLE = {
                 facebox: {
-                    loadingImage: "{{ media_prefix }}img/facebox/loading.gif",
-                    closeImage:   "{{ media_prefix }}img/facebox/closelabel.png"
+                    loadingImage: "{{ nexus_media_prefix }}img/facebox/loading.gif",
+                    closeImage:   "{{ nexus_media_prefix }}img/facebox/closelabel.png"
                 }
             };
         </script>
 
-        <script src="{{ media_prefix }}js/lib/jquery.js"></script>
-        <script src="{{ media_prefix }}js/lib/jquery.tmpl.js"></script>
-        <script src="{{ media_prefix }}js/lib/facebox/facebox.js"></script>
-        <script src="{{ media_prefix }}js/nexus.js"></script>
+        <script src="{{ nexus_media_prefix }}js/lib/jquery.js"></script>
+        <script src="{{ nexus_media_prefix }}js/lib/jquery.tmpl.js"></script>
+        <script src="{{ nexus_media_prefix }}js/lib/facebox/facebox.js"></script>
+        <script src="{{ nexus_media_prefix }}js/nexus.js"></script>
         
         {% block head %}
         {% endblock %}
@@ -34,7 +34,7 @@
         <div id="header">
             <div class="wrapper">
                 <h1>
-                    <img src="{{ media_prefix }}img/nexus_logo.png" alt="" height="106" width="107"/>
+                    <img src="{{ nexus_media_prefix }}img/nexus_logo.png" alt="" height="106" width="107"/>
                     Nexus
                 </h1>
                 <h2>{% block heading %}{% if title %}{{ title }}{% endif %}{% endblock %}</h2>

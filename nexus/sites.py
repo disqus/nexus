@@ -89,7 +89,7 @@ class NexusSite(object):
         context = csrf(request)
         context.update({
             'request': request,
-            'media_prefix': conf.MEDIA_PREFIX,
+            'nexus_media_prefix': conf.MEDIA_PREFIX,
         })
         return context
         

@@ -326,6 +326,7 @@ input[type=text], input[type=password], select, textarea {
 }
 #breadcrumbs li:last-child a,
 #breadcrumbs li:last-child span {
+    background: none;
     text-decoration: none;
     font-weight: inherit;
     padding-right: 0;

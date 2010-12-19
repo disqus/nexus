@@ -1,0 +1,132 @@
+.app-list dt {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #5A7C9D;
+}
+.app-list dt a {
+    color: inherit;
+    text-decoration: none;
+}
+.app-list dd {
+}
+.app-list dd table {
+    width: 450px;
+    border-collapse: collapse;
+}
+.app-list dd table td {
+    text-align: center;
+    padding: 5px;
+    width: 60px;
+}
+.app-list dd table th {
+    text-align: left;
+    padding: 5px;
+    width: auto;
+}
+.app-list dd table tr {
+    border-bottom: 1px dotted #ddd;
+}
+
+/* ACTION ICONS */
+
+.addlink {
+    padding-left: 12px;
+    background: url(../img/admin/icon_add.gif) 0 .2em no-repeat;
+    font-size: 0.9em;
+}
+
+.changelink {
+    padding-left: 12px;
+    background: url(../img/admin/icon_change.gif) 0 .2em no-repeat;
+    font-size: 0.9em;
+}
+
+.deletelink {
+    padding-left: 12px;
+    background: url(../img/admin/icon_delete.gif) 0 .25em no-repeat;
+    font-size: 0.9em;
+}
+
+a.deletelink:link, a.deletelink:visited {
+    color: #CC3434;
+}
+
+a.deletelink:hover {
+    color: #993333;
+}
+
+/* OBJECT TOOLS */
+
+.object-tools {
+    font-size: 10px;
+    font-weight: bold;
+    font-family: Arial,Helvetica,sans-serif;
+    padding-left: 0;
+    float: right;
+    position: relative;
+    margin-top: -2.4em;
+    margin-bottom: -2em;
+}
+
+.form-row .object-tools {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    float: none;
+    height: 2em;
+    padding-left: 3.5em;
+}
+
+.object-tools li {
+    display: block;
+    float: left;
+    background: url(../img/admin/tool-left.gif) 0 0 no-repeat;
+    padding: 0 0 0 8px;
+    margin-left: 2px;
+    height: 16px;
+}
+
+.object-tools li:hover {
+    background: url(../img/admin/tool-left_over.gif) 0 0 no-repeat;
+}
+
+.object-tools a:link, .object-tools a:visited {
+    display: block;
+    float: left;
+    color: white;
+    padding: .1em 14px .1em 8px;
+    height: 14px;
+    background: #999 url(../img/admin/tool-right.gif) 100% 0 no-repeat;
+}
+
+.object-tools a:hover, .object-tools li:hover a {
+    background: #5b80b2 url(../img/admin/tool-right_over.gif) 100% 0 no-repeat;
+}
+
+.object-tools a.viewsitelink, .object-tools a.golink {
+    background: #999 url(../img/admin/tooltag-arrowright.gif) top right no-repeat;
+    padding-right: 28px;
+}
+
+.object-tools a.viewsitelink:hover, .object-tools a.golink:hover {
+    background: #5b80b2 url(../img/admin/tooltag-arrowright_over.gif) top right no-repeat;
+}
+
+.object-tools a.addlink {
+    background: #999 url(../img/admin/tooltag-add.gif) top right no-repeat;
+    padding-right: 28px;
+}
+
+.object-tools a.addlink:hover {
+    background: #5b80b2 url(../img/admin/tooltag-add_over.gif) top right no-repeat;
+}
+
+/* OBJECT HISTORY */
+
+table#change-history {
+    width: 100%;
+}
+
+table#change-history tbody th {
+    width: 16em;
+}
