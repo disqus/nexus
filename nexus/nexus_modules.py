@@ -127,7 +127,9 @@ class AdminModule(nexus.NexusModule):
         return 'Model Admin'
 
     def render_on_dashboard(self, request):
-        return self.render_to_string('nexus/admin/dashboard/index.html', {}, request)
+        return self.render_to_string('nexus/admin/dashboard/index.html', {
+            'base_url': './' + self.app_name + '/'
+        }, request)
 
 if 'django.contrib.admin' in settings.INSTALLED_APPS:
     nexus.site.register(AdminModule(admin.site), 'admin')

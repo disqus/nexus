@@ -34,8 +34,10 @@
         <div id="header">
             <div class="wrapper">
                 <h1>
-                    <img src="{{ nexus_media_prefix }}img/nexus_logo.png" alt="" height="106" width="107"/>
-                    Nexus
+                    <a href="{% url nexus:index %}">
+                        <img src="{{ nexus_media_prefix }}img/nexus_logo.png" alt="" height="106" width="107"/>
+                        Nexus
+                    </a>
                 </h1>
                 <h2>{% block heading %}{% if title %}{{ title }}{% endif %}{% endblock %}</h2>
                 <ul class="nav" id="account">

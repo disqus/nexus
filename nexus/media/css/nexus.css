@@ -55,7 +55,16 @@ input[type=text], input[type=password], select, textarea {
     padding: 2px 4px;
 }
 
-fieldset { border: 1px solid #ccc; }
+fieldset {
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+fieldset h2 {
+    padding: 10px 10px 0;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #5A7C9D;
+}
 
 .wrapper {
     position: relative;
@@ -200,12 +209,15 @@ fieldset { border: 1px solid #ccc; }
     font-weight: bold;
     -webkit-box-shadow: 0 1px 3px rgba(0,0,0, .1);
     -moz-box-shadow: 0 1px 3px rgba(0,0,0, .2);
-    background: #fff url(../img/button-bg.jpg) left bottom repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF', endColorstr='#DCDCDC'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DCDCDC)); /* for webkit browsers */
+    background:-moz-linear-gradient(center top , #FFFFFF 0pt, #DCDCDC 100%) repeat scroll 0 0 transparent;
     text-shadow: 0 1px 0 #fff;
     padding: 8px;
     font-family: Arial, Helvetica, Calibri, sans-serif;
     position: relative;
     vertical-align: text-middle;
+    text-decoration: none;
 }
 
 .button {
@@ -221,13 +233,18 @@ fieldset { border: 1px solid #ccc; }
 .paging li a:hover,
 .button:focus,
 .button:hover {
-    background-position: right -156px;
+    border-color: #7b9cad;
+    color: #436586;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#ccc'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#f9f9f9), to(#ccc)); /* for webkit browsers */
+    background:-moz-linear-gradient(center top , #f9f9f9 0pt, #ccc 100%) repeat scroll 0 0 transparent;
 }
 
 .button.delete:hover,
 .button.delete:focus {
     border-color: red;
-    background-color: #E25F53;
+    filter: none;
+    background: #E25F53;
     color: #fff;
     text-shadow: 0 1px 0 red;
 }

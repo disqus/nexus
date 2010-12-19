@@ -44,7 +44,7 @@
                 {% if entry.is_deletion %}
                     {{ entry.object_repr }}
                 {% else %}
-                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                    <a href="{{ base_url }}{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
                 {% endif %}
             </span>
             <span class="action-time">

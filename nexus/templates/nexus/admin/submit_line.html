@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="submit-row" {% if is_popup %}style="overflow: auto;"{% endif %}>
+    {% if show_save %}
+        <button type="submit" name="_save" value="1" class="button default"{{ onclick_attrib }}>{% trans 'Save' %}</button>
+    {% endif %}
+    {% if show_delete_link %}
+        <p class="deletelink-box"><a href="delete/" class="button delete">{% trans "Delete" %}</a></p>
+    {% endif %}
+    {% if show_save_as_new %}
+        <button type="submit" value="1" name="_saveasnew" {{ onclick_attrib }}>{% trans 'Save as new' %}</button>
+    {%endif%}
+    {% if show_save_and_add_another %}
+        <button type="submit" value="1" name="_addanother" class="button"{{ onclick_attrib }}>{% trans 'Save and add another' %}</button>
+    {% endif %}
+    {% if show_save_and_continue %}
+        <button type="submit" value="1" name="_continue" class="button"{{ onclick_attrib }}>{% trans 'Save and continue editing' %}</button>
+    {% endif %}
+</div>
