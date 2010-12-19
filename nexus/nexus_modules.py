@@ -16,8 +16,10 @@ def make_nexus_model_admin(model_admin):
                 'nexus/admin/change_form.html',
             )
 
-            context.update(self.admin_site.get_context(request))
-            context.pop('title', None)
+            extra_context = self.admin_site.get_context(request)
+            del extra_context['title']
+
+            context.update(extra_context)
             return super(NexusModelAdmin, self).render_change_form(request, context, add, change, form_url, obj)
 
         def changelist_view(self, request, extra_context=None):
@@ -35,7 +37,7 @@ def make_nexus_model_admin(model_admin):
             else:
                 extra_context.update(self.admin_site.get_context(request))
             
-            extra_context.pop('title', None)
+            del extra_context['title']
             return super(NexusModelAdmin, self).changelist_view(request, extra_context)
     return NexusModelAdmin
 
