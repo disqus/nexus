@@ -16,10 +16,13 @@
             {% endfor %}
         </ul>
     {% endif %}
-    {% for title, content in module_set %}
+    {% for title, content, link in module_set %}
         <div class="dashboard-module">
             <div class="dashboard-module-title">
                 {{ title }}
+                {% if link %}
+                    <a href="{{ link }}" class="go-link">More &rsaquo;</a>
+                {% endif %}
             </div>
             <div class="dashboard-module-content">
                 {{ content }}

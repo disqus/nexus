@@ -339,21 +339,26 @@ fieldset { border: 1px solid #ccc; }
 
 .dashboard-module {
     display: inline-block;
-    border: 1px solid #ddd;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
     border-radius: 6px;
     padding: 10px;
     margin: 5px;
     width: 415px;
-    background: #eee;
     vertical-align: top;
 }
 .dashboard-module-title {
     font-weight: bold;
+    color: #5A7C9D;
     border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
     margin-bottom: 10px;
+}
+.dashboard-module-title .go-link {
+    margin-left: 5px;
+    color: #666;
+    font-weight: normal;
+    font-size: 0.9em;
+    text-decoration: none;
+    text-transform: lowercase;
 }
 .dashboard-module-content {
     

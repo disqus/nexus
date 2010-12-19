@@ -146,10 +146,15 @@ class NexusSite(object):
         module_set = []
         link_set = []
         for module in self._registry.itervalues():
-            if hasattr(module, 'render_on_dashboard'):
-                module_set.append((module.get_dashboard_title(), module.render_on_dashboard(request)))
             if module.home_url:
-                link_set.append((module.get_title(), reverse('nexus:%s' % (module.get_home_url(),), current_app=self.name)))
+                home_url = reverse('nexus:%s' % (module.get_home_url(),), current_app=self.name)
+            else:
+                home_url = None
+
+            if hasattr(module, 'render_on_dashboard'):
+                module_set.append((module.get_dashboard_title(), module.render_on_dashboard(request), home_url))
+            if home_url:
+                link_set.append((module.get_title(), home_url))
         
         return self.render_to_response('nexus/dashboard.html', {
             'module_set': module_set,
