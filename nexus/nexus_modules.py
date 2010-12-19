@@ -3,8 +3,6 @@ import nexus
 from django.conf import settings
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from django.utils.text import capfirst
-from django.utils.translation import ugettext as _
 
 class NexusAdminSite(admin.AdminSite):
     index_template = 'nexus/admin/index.html'
@@ -16,53 +14,16 @@ class NexusAdminSite(admin.AdminSite):
     def has_permission(self, request):
         return self.module.site.has_permission(request)
 
+    def get_context(self, request):
+        context = self.module.get_context(request)
+        context.update(self.module.site.get_context(request))
+        return context
+
     def index(self, request, extra_context=None):
-        """
-        Displays the main admin index page, which lists all of the installed
-        apps that have been registered in this site.
-        """
-        app_dict = {}
-        user = request.user
-        for model, model_admin in self._registry.items():
-            app_label = model._meta.app_label
-            has_module_perms = user.has_module_perms(app_label)
+        return super(NexusAdminSite, self).index(request, self.get_context(request))
 
-            if has_module_perms:
-                perms = model_admin.get_model_perms(request)
-
-                # Check whether user has any perm for this module.
-                # If so, add the module to the model_list.
-                if True in perms.values():
-                    model_dict = {
-                        'name': capfirst(model._meta.verbose_name_plural),
-                        'admin_url': mark_safe('%s/%s/' % (app_label, model.__name__.lower())),
-                        'perms': perms,
-                    }
-                    if app_label in app_dict:
-                        app_dict[app_label]['models'].append(model_dict)
-                    else:
-                        app_dict[app_label] = {
-                            'name': app_label.title(),
-                            'app_url': app_label + '/',
-                            'has_module_perms': has_module_perms,
-                            'models': [model_dict],
-                        }
-
-        # Sort the apps alphabetically.
-        app_list = app_dict.values()
-        app_list.sort(lambda x, y: cmp(x['name'], y['name']))
-
-        # Sort the models alphabetically within each app.
-        for app in app_list:
-            app['models'].sort(lambda x, y: cmp(x['name'], y['name']))
-
-        context = {
-            'title': _('Site administration'),
-            'app_list': app_list,
-            'root_path': self.root_path,
-        }
-        context.update(extra_context or {})
-        return self.module.render_to_response('nexus/admin/index.html', context, request)
+    def app_index(self, request, app_label, extra_context=None):
+        return super(NexusAdminSite, self).app_index(request, app_label, self.get_context(request))
 
 class AdminModule(nexus.NexusModule):
     home_url = 'index'

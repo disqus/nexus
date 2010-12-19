@@ -85,25 +85,25 @@ class NexusSite(object):
 
         return update_wrapper(inner, view)
 
-    def render_to_response(self, template, context={}, request=None, current_app=None):
+    def get_context(self, request):
+        context = csrf(request)
+        context.update({
+            'request': request,
+            'media_prefix': conf.MEDIA_PREFIX,
+        })
+        return context
+        
+
+    def render_to_response(self, template, context, request, current_app=None):
         "Shortcut for rendering to response and default context instances"
         if not current_app:
             current_app = self.app_name
         else:
             current_app = '%s:%s' % (self.app_name, current_app)
 
-        if request:
-            context_instance = RequestContext(request, current_app=current_app)
-        else:
-            context_instance = Context()
-        
-        if request:
-            context['request'] = request
-            context.update(csrf(request))
-        
-        context.update({
-            'media_prefix': conf.MEDIA_PREFIX,
-        })
+        context_instance = RequestContext(request, current_app=current_app)
+
+        context.update(self.get_context(request))
         
         return render_to_response(template, context,
             context_instance=context_instance

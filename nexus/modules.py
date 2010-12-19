@@ -19,12 +19,15 @@ class NexusModule(object):
         return render_to_string(template, context,
             context_instance=context_instance
         )
-    
-    def render_to_response(self, template, context={}, request=None):
-        context.update({
+
+    def get_context(self, request):
+        return {
             'title': self.get_title(),
             'trail_bits': self.get_trail(request),
-        })
+        }
+    
+    def render_to_response(self, template, context, request):
+        context.update(self.get_context(request))
         return self.site.render_to_response(template, context, request, current_app=self.app_name)
 
     def as_view(self, *args, **kwargs):
