@@ -2,6 +2,8 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.template import RequestContext, Context
 
+import hashlib
+
 class NexusModule(object):
     home_url = None
     
@@ -20,12 +22,6 @@ class NexusModule(object):
             context_instance=context_instance
         )
 
-    def get_context(self, request):
-        return {
-            'title': self.get_title(),
-            'trail_bits': self.get_trail(request),
-        }
-    
     def render_to_response(self, template, context, request):
         context.update(self.get_context(request))
         return self.site.render_to_response(template, context, request, current_app=self.app_name)
@@ -33,6 +29,15 @@ class NexusModule(object):
     def as_view(self, *args, **kwargs):
         return self.site.as_view(*args, **kwargs)
     
+    def get_context(self, request):
+        return {
+            'title': self.get_title(),
+            'trail_bits': self.get_trail(request),
+        }
+    
+    def get_namespace(self):
+        return hashlib.md5(self.__class__.__module__ + '.' + self.__class__.__name__).hexdigest()
+
     def get_title(self):
         return self.__class__.__name__
 

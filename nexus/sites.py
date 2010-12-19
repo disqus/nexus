@@ -29,7 +29,7 @@ class NexusSite(object):
             module = module()
         module.site = self
         if not namespace:
-            namespace = hash(module)
+            namespace = module.get_namespace()
         if namespace:
             module.app_name = namespace
         self._registry[namespace] = module

@@ -132,4 +132,4 @@ class AdminModule(nexus.NexusModule):
         }, request)
 
 if 'django.contrib.admin' in settings.INSTALLED_APPS:
-    nexus.site.register(AdminModule(admin.site), 'admin')
+    nexus.site.register(AdminModule(admin.site), admin.site.app_name)
