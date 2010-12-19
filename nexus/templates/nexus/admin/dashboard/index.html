@@ -1,25 +1,49 @@
 {% load log %}
 {% load i18n %}
 
-{% get_admin_log 5 as admin_log for_user user %}
+<style type="text/css">
+.action-list {
+    list-style: none;
+    margin-left: 0;
+    color: #999;
+}
+.action-list .action-user {
+    color: #333;
+}
+</style>
+
+{% get_admin_log 5 as admin_log %}
 
 {% if not admin_log %}
     <p>{% trans "There isn\'t any history available for the admin." %}</p>
 {% else %}
-    <ul class="actionlist">
+    <ul class="action-list">
     {% for entry in admin_log %}
         <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
-            {% if entry.is_deletion %}
-                {{ entry.object_repr }}
-            {% else %}
-                <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
-            {% endif %}
-            <br/>
+            <span class="action-user">{{ entry.user }}</span>
+            <span class="action-type">
+                {% if entry.is_addition %}
+                    added
+                {% endif %}
+                {% if entry.is_change %}
+                    changed
+                {% endif %}
+                {% if entry.is_deletion %}
+                    deleted
+                {% endif %}
+            </span>
             {% if entry.content_type %}
-                <span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
-            {% else %}
-                <span class="mini quiet">{% trans 'Unknown content' %}</span>
+                <span class"action-object-type">
+                    {% trans entry.content_type.name %}</span>
+                </span>
             {% endif %}
+            <span class="action-object">
+                {% if entry.is_deletion %}
+                    {{ entry.object_repr }}
+                {% else %}
+                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                {% endif %}
+            </span>
         </li>
     {% endfor %}
     </ul>
