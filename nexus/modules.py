@@ -4,6 +4,11 @@ from django.template import RequestContext, Context
 
 class NexusModule(object):
     home_url = None
+    
+    def __init__(self, name=None, app_name=None):
+        if name:
+            self.name = name
+        self.app_name = app_name
 
     def render_to_string(self, template, context={}, request=None):
         if request:
@@ -20,7 +25,7 @@ class NexusModule(object):
             'title': self.get_title(),
             'trail_bits': self.get_trail(request),
         })
-        return self.site.render_to_response(template, context, request)
+        return self.site.render_to_response(template, context, request, current_app=self.app_name)
 
     def as_view(self, *args, **kwargs):
         return self.site.as_view(*args, **kwargs)
@@ -36,8 +41,22 @@ class NexusModule(object):
 
         return patterns('')
 
+    def urls(self):
+        if self.app_name and self.name:
+            return self.get_urls(), self.app_name, self.name
+        return self.get_urls()
+
+    urls = property(urls)
+
+    def get_home_url(self):
+        if self.app_name:
+            home_url = '%s:%s' % (self.app_name, self.home_url)
+        else:
+            home_url = self.home_url
+        return home_url
+
     def get_trail(self, request):
         return [
-            (self.get_title(), reverse(self.home_url)),
+            (self.get_title(), reverse('%s:%s' % (self.site.name, self.get_home_url()))),
         ]
 

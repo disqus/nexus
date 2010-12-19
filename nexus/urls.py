@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
         'document_root': os.path.join(NEXUS_ROOT, 'media'),
         'show_indexes': True,
-    }, name='nexus-media'),
+    }),
 
     url(r'^$', 'nexus.views.dashboard', name='nexus'),
 )

@@ -5,8 +5,8 @@
         <meta charset="utf-8">
         <title>{% block title %}{% if title %}{{ title }} | {% endif %}Nexus{% endblock %}</title>
 
-        <link rel="stylesheet" href="{% url nexus-media 'css/nexus.css' %}">
-        <link rel="stylesheet" href="{% url nexus-media 'css/facebox.css' %}">
+        <link rel="stylesheet" href="{{ media_prefix }}css/nexus.css">
+        <link rel="stylesheet" href="{{ media_prefix }}css/facebox.css">
         <link href='//fonts.googleapis.com/css?family=Yanone+Kaffeesatz:light,regular&amp;subset=latin' rel='stylesheet'>
         <link href='//fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet'>
 
@@ -15,16 +15,16 @@
         <script>
             var GARGOYLE = {
                 facebox: {
-                    loadingImage: "{% url nexus-media 'img/facebox/loading.gif' %}",
-                    closeImage:     "{% url nexus-media 'img/facebox/closelabel.png' %}"
+                    loadingImage: "{{ media_prefix }}img/facebox/loading.gif",
+                    closeImage:   "{{ media_prefix }}img/facebox/closelabel.png"
                 }
             };
         </script>
 
-        <script src="{% url nexus-media 'js/lib/jquery.js' %}"></script>
-        <script src="{% url nexus-media 'js/lib/jquery.tmpl.js' %}"></script>
-        <script src="{% url nexus-media 'js/lib/facebox/facebox.js' %}"></script>
-        <script src="{% url nexus-media 'js/nexus.js' %}"></script>
+        <script src="{{ media_prefix }}js/lib/jquery.js"></script>
+        <script src="{{ media_prefix }}js/lib/jquery.tmpl.js"></script>
+        <script src="{{ media_prefix }}js/lib/facebox/facebox.js"></script>
+        <script src="{{ media_prefix }}js/nexus.js"></script>
         
         {% block head %}
         {% endblock %}
@@ -34,13 +34,13 @@
         <div id="header">
             <div class="wrapper">
                 <h1>
-                    <img src="{% url nexus-media 'img/nexus_logo.png' %}" alt="" height="106" width="107"/>
+                    <img src="{{ media_prefix }}img/nexus_logo.png" alt="" height="106" width="107"/>
                     Nexus
                 </h1>
                 <h2>{% block heading %}{% if title %}{{ title }}{% endif %}{% endblock %}</h2>
                 <ul class="nav" id="account">
                     {% if request.user.is_authenticated %}
-                            <li><a href="{% url nexus-logout %}">Logout</a>
+                        <li><a href="{% url nexus:logout %}">Logout</a>
                     {% endif %}
                 </ul>
             </div>
@@ -59,7 +59,7 @@
                     {% endif %}
                     {% block breadcrumbs %}
                         <ul id="breadcrumbs">
-                            <li><a href="{% url nexus %}">Nexus</a></li>
+                            <li><a href="{% url nexus:index %}">Nexus</a></li>
                             {% for title, link in trail_bits %}
                                 <li><a href="{{ link }}">{{ title }}</a></li>
                             {% endfor %}

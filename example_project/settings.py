@@ -15,6 +15,8 @@ MANAGERS = ADMINS
 
 PROJECT_ROOT = os.path.dirname(__file__)
 
+NEXUS_MEDIA_PREFIX = '/media/'
+
 sys.path.insert(0, os.path.abspath(os.path.join(PROJECT_ROOT, '..')))
 
 DATABASES = {

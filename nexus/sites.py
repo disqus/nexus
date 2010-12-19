@@ -9,12 +9,20 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.utils.functional import update_wrapper
 
+from nexus import conf
+
 import os.path
 
 NEXUS_ROOT = os.path.dirname(__file__)
 
 class NexusSite(object):
-    _registry = {}
+    def __init__(self, name=None, app_name='nexus'):
+        self._registry = {}
+        if name is None:
+            self.name = 'nexus'
+        else:
+            self.name = name
+        self.app_name = app_name
 
     def register(self, module, namespace=None):
         if callable(module):
@@ -22,6 +30,8 @@ class NexusSite(object):
         module.site = self
         if not namespace:
             namespace = hash(module)
+        if namespace:
+            module.app_name = namespace
         self._registry[namespace] = module
 
     def get_urls(self):
@@ -33,18 +43,21 @@ class NexusSite(object):
                 'show_indexes': True,
             }, name='nexus-media'),
 
-            url(r'^$', self.as_view(self.dashboard), name='nexus'),
-            url(r'^login/$', self.login, name='nexus-login'),
-            url(r'^logout/$', self.as_view(self.logout), name='nexus-logout'),
+            url(r'^$', self.as_view(self.dashboard), name='index'),
+            url(r'^login/$', self.login, name='login'),
+            url(r'^logout/$', self.as_view(self.logout), name='logout'),
         )
         for namespace, module in self._registry.iteritems():
             urlpatterns += patterns('',
-                url(r'^%s/' % namespace, include(module.get_urls())),
+                url(r'^%s/' % namespace, include(module.urls)),
             )
         
         return urlpatterns
 
-    urls = property(get_urls)
+    def urls(self):
+        return self.get_urls(), self.app_name, self.name
+
+    urls = property(urls)
 
     def has_permission(self, request):
         """
@@ -72,16 +85,25 @@ class NexusSite(object):
 
         return update_wrapper(inner, view)
 
-    def render_to_response(self, template, context={}, request=None):
+    def render_to_response(self, template, context={}, request=None, current_app=None):
         "Shortcut for rendering to response and default context instances"
+        if not current_app:
+            current_app = self.app_name
+        else:
+            current_app = '%s:%s' % (self.app_name, current_app)
+
         if request:
-            context_instance = RequestContext(request)
+            context_instance = RequestContext(request, current_app=current_app)
         else:
             context_instance = Context()
         
         if request:
             context['request'] = request
             context.update(csrf(request))
+        
+        context.update({
+            'media_prefix': conf.MEDIA_PREFIX,
+        })
         
         return render_to_response(template, context,
             context_instance=context_instance
@@ -98,7 +120,7 @@ class NexusSite(object):
             form = AuthenticationForm(request, request.POST)
             if form.is_valid():
                 login_(request, form.get_user())
-                return HttpResponseRedirect(request.POST.get('next') or reverse('nexus'))
+                return HttpResponseRedirect(request.POST.get('next') or reverse('nexus:index', current_app=self.name))
             else:
                 request.session.set_test_cookie()
         else:
@@ -116,7 +138,7 @@ class NexusSite(object):
 
         logout(request)
 
-        return HttpResponseRedirect(reverse('nexus'))
+        return HttpResponseRedirect(reverse('nexus:index', current_app=self.name))
 
     def dashboard(self, request):
         "Basic dashboard panel"
@@ -127,7 +149,7 @@ class NexusSite(object):
             if hasattr(module, 'render_on_dashboard'):
                 module_set.append((module.get_dashboard_title(), module.render_on_dashboard(request)))
             if module.home_url:
-                link_set.append((module.get_title(), reverse(module.home_url)))
+                link_set.append((module.get_title(), reverse('nexus:%s' % (module.get_home_url(),), current_app=self.name)))
         
         return self.render_to_response('nexus/dashboard.html', {
             'module_set': module_set,
