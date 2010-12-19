@@ -8,7 +8,10 @@
     color: #999;
 }
 .action-list .action-user {
-    color: #333;
+    color: #000;
+}
+.action-list .action-time {
+    font-size: 0.9em;
 }
 </style>
 
@@ -43,6 +46,9 @@
                 {% else %}
                     <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
                 {% endif %}
+            </span>
+            <span class="action-time">
+                {{ entry.action_time|timesince }} ago
             </span>
         </li>
     {% endfor %}
