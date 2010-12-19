@@ -8,6 +8,10 @@
     <!-- <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/dashboard.css" /> -->
 {% endblock %}
 
+{% block breadcrumb_bits %}
+    <li><a href="./">{% trans "Model Admin" %}</a></li>
+{% endblock %}
+
 {% block content %}
     {% if app_list %}
         {% for app in app_list %}

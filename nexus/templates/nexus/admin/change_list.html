@@ -33,9 +33,9 @@
 
 {% if not is_popup %}
     {% block breadcrumb_bits %}
-        <li><a href="../../">{% trans "Admin" %}</a></li>
+        <li><a href="../../">{% trans "Model Admin" %}</a></li>
         <li><a href="../">{{ app_label|capfirst }}</a></li>
-        <li>{{ cl.opts.verbose_name_plural|capfirst }}</li>
+        <li><span>{{ cl.opts.verbose_name_plural|capfirst }}</span></li>
     {% endblock %}
 {% endif %}
 

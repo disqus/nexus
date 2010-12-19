@@ -313,7 +313,8 @@ input[type=text], input[type=password], select, textarea {
     display: inline;
     float: left;
 }
-#breadcrumbs a {
+#breadcrumbs a,
+#breadcrumbs span {
     font-weight: normal;
     background: url('../img/breadcrumb.png') right center no-repeat;
     padding: 0 12px 0 0;
@@ -323,7 +324,8 @@ input[type=text], input[type=password], select, textarea {
     background: none;
     font-weight: bold;
 }
-#breadcrumbs li:last-child a {
+#breadcrumbs li:last-child a,
+#breadcrumbs li:last-child span {
     text-decoration: none;
     font-weight: inherit;
     padding-right: 0;

@@ -12,20 +12,20 @@
 
 {% if not is_popup %}
     {% block breadcrumb_bits %}
-        <li><a href="../../../">{% trans "Admin" %}</a></li>
+        <li><a href="../../../">{% trans "Model Admin" %}</a></li>
         <li><a href="../../">{{ app_label|capfirst|escape }}</a></li>
         <li>
             {% if has_change_permission %}
                 <a href="../">{{ opts.verbose_name_plural|capfirst }}</a>
             {% else %}
-                {{ opts.verbose_name_plural|capfirst }}
+                <span>{{ opts.verbose_name_plural|capfirst }}</span>
             {% endif %}
         </li>
         <li>
             {% if add %}
-                {% trans "Add" %} {{ opts.verbose_name }}
+                <span>{% trans "Add" %} {{ opts.verbose_name }}</span>
             {% else %}
-                {{ original|truncatewords:"18" }}
+                <span>{{ original|truncatewords:"18" }}</span>
             {% endif %}
         </li>
     {% endblock %}
