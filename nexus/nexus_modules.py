@@ -2,7 +2,6 @@ import nexus
 
 from django.conf import settings
 from django.contrib import admin
-from django.utils.safestring import mark_safe
 
 def make_nexus_model_admin(model_admin):
     class NexusModelAdmin(model_admin.__class__):
@@ -128,7 +127,7 @@ class AdminModule(nexus.NexusModule):
         return 'Model Admin'
 
     def render_on_dashboard(self, request):
-        return mark_safe('<p>You have %s admin modules registered</p>' % len(self.admin_site._registry))
+        return self.render_to_string('nexus/admin/dashboard/index.html', {}, request)
 
 if 'django.contrib.admin' in settings.INSTALLED_APPS:
     nexus.site.register(AdminModule(admin.site), 'admin')
