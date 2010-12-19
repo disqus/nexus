@@ -161,7 +161,9 @@ form .aligned table p {
 }
 
 form .aligned p.help {
-    padding-left: 38px;
+    padding-left: 30px;
+    margin-bottom: 0;
+    margin-top: 5px;
 }
 
 .aligned .vCheckboxLabel {

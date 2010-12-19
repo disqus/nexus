@@ -65,6 +65,9 @@ fieldset h2 {
     font-size: 1.2em;
     color: #5A7C9D;
 }
+.help {
+    color: #999;
+}
 
 .wrapper {
     position: relative;
