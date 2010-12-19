@@ -40,7 +40,7 @@
                 <h2>{% block heading %}{% if title %}{{ title }}{% endif %}{% endblock %}</h2>
                 <ul class="nav" id="account">
                     {% if request.user.is_authenticated %}
-                        <li><a href="{% url nexus:logout %}">Logout</a>
+                        <li>Logged in as {{ request.user.username }} (<a href="{% url nexus:logout %}">Logout</a>)
                     {% endif %}
                 </ul>
             </div>

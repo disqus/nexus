@@ -289,8 +289,9 @@ fieldset { border: 1px solid #ccc; }
 
 #account {
     position: absolute;
-    right: 10px;
-    top: 8px;
+    font-size: 0.9em;
+    right: 0px;
+    top: 9px;
     color: #fff;
 }
 
