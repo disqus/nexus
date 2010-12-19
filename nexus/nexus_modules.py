@@ -10,7 +10,7 @@ def make_nexus_model_admin(model_admin):
             opts = self.model._meta
             app_label = opts.app_label
 
-            self.change_form_template = (
+            self.add_form_template = self.change_form_template = (
                 'nexus/admin/%s/%s/change_form.html' % (app_label, opts.object_name.lower()),
                 'nexus/admin/%s/change_form.html' % app_label,
                 'nexus/admin/change_form.html',
@@ -39,6 +39,42 @@ def make_nexus_model_admin(model_admin):
             
             del extra_context['title']
             return super(NexusModelAdmin, self).changelist_view(request, extra_context)
+
+        def delete_view(self, request, object_id, extra_context=None):
+            opts = self.model._meta
+            app_label = opts.app_label
+            
+            self.delete_confirmation_template = (
+                'nexus/admin/%s/%s/delete_confirmation.html' % (app_label, opts.object_name.lower()),
+                'nexus/admin/%s/delete_confirmation.html' % app_label,
+                'nexus/admin/delete_confirmation.html'
+            )
+
+            if not extra_context:
+                extra_context = self.admin_site.get_context(request)
+            else:
+                extra_context.update(self.admin_site.get_context(request))
+            
+            del extra_context['title']
+            return super(NexusModelAdmin, self).delete_view(request, object_id, extra_context)
+
+        def history_view(self, request, object_id, extra_context=None):
+            opts = self.model._meta
+            app_label = opts.app_label
+            
+            self.object_history_template = (
+                'nexus/admin/%s/%s/object_history.html' % (app_label, opts.object_name.lower()),
+                'nexus/admin/%s/object_history.html' % app_label,
+                'nexus/admin/object_history.html'
+            )
+
+            if not extra_context:
+                extra_context = self.admin_site.get_context(request)
+            else:
+                extra_context.update(self.admin_site.get_context(request))
+            
+            del extra_context['title']
+            return super(NexusModelAdmin, self).history_view(request, object_id, extra_context)
     return NexusModelAdmin
 
 def make_nexus_admin_site(admin_site):
