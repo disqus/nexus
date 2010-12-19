@@ -3,11 +3,6 @@
 {% load i18n %}
 {% load adminmedia %}
 
-{% block head %}
-    {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{{ nexus_media_prefix }}css/admin.css" />
-{% endblock %}
-
 {% block breadcrumb_bits %}
     <li><span>{% trans "Model Admin" %}</span></li>
 {% endblock %}

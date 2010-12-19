@@ -55,6 +55,8 @@ input[type=text], input[type=password], select, textarea {
     padding: 2px 4px;
 }
 
+fieldset { border: 1px solid #ccc; }
+
 .wrapper {
     position: relative;
     min-width: 600px;

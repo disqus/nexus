@@ -1,1 +1,6 @@
 {% extends "nexus/base.html" %}
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ nexus_media_prefix }}css/admin.css" />
+{% endblock %}
