@@ -7,8 +7,8 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext, Context
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+from django.utils.functional import update_wrapper
 
-from functools import wraps
 import os.path
 
 NEXUS_ROOT = os.path.dirname(__file__)
@@ -70,7 +70,7 @@ class NexusSite(object):
         if not getattr(view, 'csrf_exempt', False):
             inner = csrf_protect(inner)
 
-        return wraps(view)(inner)
+        return update_wrapper(inner, view)
 
     def render_to_response(self, template, context={}, request=None):
         "Shortcut for rendering to response and default context instances"

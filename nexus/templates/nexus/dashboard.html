@@ -1,8 +1,12 @@
 {% extends "nexus/base.html" %}
 
+{% load i18n %}
+
 {% block heading %}
-    Dashboard
+    {% trans "Dashboard" %}
 {% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
 
 {% block content %}
     {% if link_set %}

@@ -1,16 +1,20 @@
 {% extends "nexus/base.html" %}
 
-{% block title %}Login | Nexus{% endblock %}
+{% load i18n %}
 
-{% block heading %}Login{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}{% trans "Login" %} | Nexus{% endblock %}
+
+{% block heading %}{% trans "Login" %}{% endblock %}
 
 {% block container %}
     <div id="container" class="login-area">
       <div class="wrapper">
-        <p>You must log in to continue</p>
+        <p>{% trans "You must log in to continue." %}</p>
     
         {% if form.errors %}
-            <p class="error">Your username and password didn't match. Please try again.</p>
+            <p class="error">{% trans "Your username and password didn't match. Please try again." %}</p>
         {% endif %}
 
         <form method="post" action="" class="login-form">
@@ -32,7 +36,7 @@
                 </tr>
             </table>
             <div class="submit">
-                <button type="submit" class="button">Login</button>
+                <button type="submit" class="button">{% trans "Login" %}</button>
             </div>
         </form>
       </div>

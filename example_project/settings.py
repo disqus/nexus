@@ -93,15 +93,25 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'nexus',
-    'gargoyle',
     'south',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
 )
+
+try:
+    __import__('pkg_resources') \
+        .get_distribution('nexus').version
+except Exception, e:
+    pass
+else:
+    INSTALLED_APPS = INSTALLED_APPS + (
+        'gargoyle',
+    )
 
 try:
     from local_settings import *

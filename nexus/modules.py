@@ -17,7 +17,7 @@ class NexusModule(object):
     
     def render_to_response(self, template, context={}, request=None):
         context.update({
-            'module_title': self.get_title(),
+            'title': self.get_title(),
             'trail_bits': self.get_trail(request),
         })
         return self.site.render_to_response(template, context, request)
