@@ -119,10 +119,6 @@ class AdminModule(nexus.NexusModule):
 
     urls = property(urls)
 
-    def set_templates(self, model, admin):
-        # TODO:
-        pass
-
     def get_title(self):
         return 'Model Admin'
 
