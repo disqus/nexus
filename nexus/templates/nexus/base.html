@@ -60,9 +60,11 @@
                     {% block breadcrumbs %}
                         <ul id="breadcrumbs">
                             <li><a href="{% url nexus:index %}">Nexus</a></li>
-                            {% for title, link in trail_bits %}
-                                <li><a href="{{ link }}">{{ title }}</a></li>
-                            {% endfor %}
+                            {% block breadcrumb_bits %}
+                                {% for title, link in trail_bits %}
+                                    <li><a href="{{ link }}">{{ title }}</a></li>
+                                {% endfor %}
+                            {% endblock %}
                         </ul>
                     {% endblock %}
                     {% block base_content %}

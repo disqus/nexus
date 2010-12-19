@@ -11,13 +11,29 @@ def make_nexus_model_admin(model_admin):
             app_label = opts.app_label
 
             self.change_form_template = (
-                "nexus/admin/%s/%s/change_form.html" % (app_label, opts.object_name.lower()),
-                "nexus/admin/%s/change_form.html" % app_label,
-                "nexus/admin/change_form.html",
+                'nexus/admin/%s/%s/change_form.html' % (app_label, opts.object_name.lower()),
+                'nexus/admin/%s/change_form.html' % app_label,
+                'nexus/admin/change_form.html',
             )
 
             context.update(self.admin_site.get_context(request))
             return super(NexusModelAdmin, self).render_change_form(request, context, add, change, form_url, obj)
+
+        def changelist_view(self, request, extra_context=None):
+            opts = self.model._meta
+            app_label = opts.app_label
+            
+            self.change_list_template = (
+                'nexus/admin/%s/%s/change_list.html' % (app_label, opts.object_name.lower()),
+                'nexus/admin/%s/change_list.html' % app_label,
+                'nexus/admin/change_list.html'
+            )
+
+            if not extra_context:
+                extra_context = self.admin_site.get_context(request)
+            else:
+                extra_context.update(self.admin_site.get_context(request))
+            return super(NexusModelAdmin, self).changelist_view(request, extra_context)
     return NexusModelAdmin
 
 def make_nexus_admin_site(admin_site):
