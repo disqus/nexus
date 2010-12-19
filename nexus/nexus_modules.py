@@ -4,36 +4,53 @@ from django.conf import settings
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-class NexusAdminSite(admin.AdminSite):
-    index_template = 'nexus/admin/index.html'
-    app_index_template = 'nexus/admin/app_index.html'
+def make_nexus_model_admin(model_admin):
+    class NexusModelAdmin(model_admin.__class__):
+        def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
+            opts = self.model._meta
+            app_label = opts.app_label
 
-    # def __init__(self, name, app_name):
-    #     super(NexusAdminSite, self).__init__(name, app_name)
+            self.change_form_template = (
+                "nexus/admin/%s/%s/change_form.html" % (app_label, opts.object_name.lower()),
+                "nexus/admin/%s/change_form.html" % app_label,
+                "nexus/admin/change_form.html",
+            )
 
-    def has_permission(self, request):
-        return self.module.site.has_permission(request)
+            context.update(self.admin_site.get_context(request))
+            return super(NexusModelAdmin, self).render_change_form(request, context, add, change, form_url, obj)
+    return NexusModelAdmin
 
-    def get_context(self, request):
-        context = self.module.get_context(request)
-        context.update(self.module.site.get_context(request))
-        return context
+def make_nexus_admin_site(admin_site):
+    class NexusAdminSite(admin_site.__class__):
+        index_template = 'nexus/admin/index.html'
+        app_index_template = 'nexus/admin/app_index.html'
 
-    def index(self, request, extra_context=None):
-        return super(NexusAdminSite, self).index(request, self.get_context(request))
+        # def __init__(self, name, app_name):
+        #     super(NexusAdminSite, self).__init__(name, app_name)
 
-    def app_index(self, request, app_label, extra_context=None):
-        return super(NexusAdminSite, self).app_index(request, app_label, self.get_context(request))
+        def has_permission(self, request):
+            return self.module.site.has_permission(request)
+
+        def get_context(self, request):
+            context = self.module.get_context(request)
+            context.update(self.module.site.get_context(request))
+            return context
+
+        def index(self, request, extra_context=None):
+            return super(NexusAdminSite, self).index(request, self.get_context(request))
+
+        def app_index(self, request, app_label, extra_context=None):
+            return super(NexusAdminSite, self).app_index(request, app_label, self.get_context(request))
+    return NexusAdminSite
 
 class AdminModule(nexus.NexusModule):
     home_url = 'index'
 
     def __init__(self, site):
-        new_site = NexusAdminSite(site.name, site.app_name)
+        new_site = make_nexus_admin_site(site)(site.name, site.app_name)
         new_site.module = self
-        new_site._registry = site._registry.copy()
-        for model, admin in new_site._registry.iteritems():
-            self.set_templates(model, admin)
+        for model, admin in site._registry.iteritems():
+            new_site.register(model, make_nexus_model_admin(admin))
         self.admin_site = new_site
         self.app_name = new_site.app_name
         self.name = new_site.name
