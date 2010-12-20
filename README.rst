@@ -8,7 +8,7 @@ Nexus is a pluggable admin application in Django. It's designed to give you a si
 Screenshot
 ==========
 
-.. image:: http://dl.dropbox.com/u/116385/Screenshots/l6xk.png
+.. image:: http://dl.dropbox.com/u/116385/nexus.png
 
 Install
 =======
