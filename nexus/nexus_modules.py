@@ -122,33 +122,40 @@ def make_nexus_admin_site(admin_site):
             return self.module.render_to_response(self.password_change_done_template, {}, request)
     return NexusAdminSite
 
-class AdminModule(nexus.NexusModule):
-    home_url = 'index'
 
-    def __init__(self, site):
-        new_site = make_nexus_admin_site(site)(site.name, site.app_name)
-        new_site.module = self
-        for model, admin in site._registry.iteritems():
-            new_site.register(model, make_nexus_model_admin(admin))
-        self.admin_site = new_site
-        self.app_name = new_site.app_name
-        self.name = new_site.name
+def make_admin_module(admin_site, name=None, app_name='admin'):
+    # XXX: might be a better API so we dont need to do this?
+    new_site = make_nexus_admin_site(admin_site)(name, app_name)
+    for model, admin in admin_site._registry.iteritems():
+        new_site.register(model, make_nexus_model_admin(admin))
 
-    def get_urls(self):
-        return self.admin_site.get_urls()
+    class AdminModule(nexus.NexusModule):
+        home_url = 'index'
+        admin_site = new_site
 
-    def urls(self):
-        return self.admin_site.urls
+        def __init__(self, *args, **kwargs):
+            super(AdminModule, self).__init__(*args, **kwargs)
+            new_site.module = self
+            self.app_name = new_site.app_name
+            self.name = new_site.name
+            new_site.name = self.site.name
 
-    urls = property(urls)
+        def get_urls(self):
+            return self.admin_site.get_urls()
 
-    def get_title(self):
-        return 'Model Admin'
+        def urls(self):
+            return self.admin_site.urls[0], self.app_name, self.name
 
-    def render_on_dashboard(self, request):
-        return self.render_to_string('nexus/admin/dashboard/index.html', {
-            'base_url': './' + self.app_name + '/'
-        }, request)
+        urls = property(urls)
+
+        def get_title(self):
+            return 'Model Admin'
+
+        def render_on_dashboard(self, request):
+            return self.render_to_string('nexus/admin/dashboard/index.html', {
+                'base_url': './' + self.app_name + '/'
+            }, request)
+    return AdminModule
 
 if 'django.contrib.admin' in settings.INSTALLED_APPS:
-    nexus.site.register(AdminModule(admin.site), admin.site.app_name)
+    nexus.site.register(make_admin_module(admin.site, admin.site.name, admin.site.app_name), admin.site.app_name)

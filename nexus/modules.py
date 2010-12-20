@@ -7,9 +7,9 @@ import hashlib
 class NexusModule(object):
     home_url = None
     
-    def __init__(self, name=None, app_name=None):
-        if name:
-            self.name = name
+    def __init__(self, site, name=None, app_name=None):
+        self.site = site
+        self.name = name
         self.app_name = app_name
 
     def render_to_string(self, template, context={}, request=None):
@@ -24,7 +24,7 @@ class NexusModule(object):
 
     def render_to_response(self, template, context, request):
         context.update(self.get_context(request))
-        return self.site.render_to_response(template, context, request, current_app=self.app_name)
+        return self.site.render_to_response(template, context, request, current_app=self.name)
 
     def as_view(self, *args, **kwargs):
         return self.site.as_view(*args, **kwargs)
@@ -67,6 +67,6 @@ class NexusModule(object):
 
     def get_trail(self, request):
         return [
-            (self.get_title(), reverse('%s:%s' % (self.site.name, self.get_home_url()))),
+            (self.get_title(), reverse(self.get_home_url(), current_app=self.app_name)),
         ]
 

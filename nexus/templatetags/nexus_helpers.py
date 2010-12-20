@@ -12,7 +12,7 @@ def show_navigation(context):
         if not module.home_url:
             continue
 
-        home_url = reverse('nexus:%s' % (module.get_home_url(),), current_app=site.name)
+        home_url = reverse(module.get_home_url(), current_app=module.name)
 
         active = request.path.startswith(home_url)
 

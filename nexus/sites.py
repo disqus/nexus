@@ -25,19 +25,17 @@ class NexusSite(object):
         self.app_name = app_name
 
     def register(self, module, namespace=None):
-        if callable(module):
-            module = module()
-        module.site = self
+        module = module(self)
         if not namespace:
             namespace = module.get_namespace()
         if namespace:
-            module.app_name = namespace
+            module.app_name = module.name = namespace
         self._registry[namespace] = module
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
 
-        urlpatterns = patterns('',
+        base_urls = patterns('',
             url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
                 'document_root': os.path.join(NEXUS_ROOT, 'media'),
                 'show_indexes': True,
@@ -46,6 +44,10 @@ class NexusSite(object):
             url(r'^$', self.as_view(self.dashboard), name='index'),
             url(r'^login/$', self.login, name='login'),
             url(r'^logout/$', self.as_view(self.logout), name='logout'),
+        ), self.app_name, self.name
+        
+        urlpatterns = patterns('',
+            url(r'^', include(base_urls)),
         )
         for namespace, module in self._registry.iteritems():
             urlpatterns += patterns('',
@@ -55,7 +57,7 @@ class NexusSite(object):
         return urlpatterns
 
     def urls(self):
-        return self.get_urls(), self.app_name, self.name
+        return self.get_urls()
 
     urls = property(urls)
 
@@ -98,10 +100,12 @@ class NexusSite(object):
     def render_to_response(self, template, context, request, current_app=None):
         "Shortcut for rendering to response and default context instances"
         if not current_app:
-            current_app = self.app_name
+            current_app = self.name
         else:
-            current_app = '%s:%s' % (self.app_name, current_app)
-
+            current_app = '%s:%s' % (self.name, current_app)
+        
+        print current_app
+        
         context_instance = RequestContext(request, current_app=current_app)
 
         context.update(self.get_context(request))
@@ -147,7 +151,7 @@ class NexusSite(object):
         module_set = []
         for module in self._registry.itervalues():
             if module.home_url:
-                home_url = reverse('nexus:%s' % (module.get_home_url(),), current_app=self.name)
+                home_url = reverse(module.get_home_url(), current_app=self.name)
             else:
                 home_url = None
 
