@@ -3,7 +3,7 @@ Nexus
 
 Nexus is a pluggable admin application in Django. It's designed to give you a simple design and architecture for building admin applications.
 
-(This project is still in progress, come back soon!)
+(This project is still under active development)
 
 Screenshot
 ==========
