@@ -3,7 +3,6 @@
 
 {% block head %}
   {{ block.super }}
-  <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/changelists.css" />
   {% if cl.formset %}
     <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
   {% endif %}
@@ -12,11 +11,6 @@
     <script type="text/javascript" src="{{ jsi18nurl|default:'../../jsi18n/' }}"></script>
   {% endif %}
   {{ media.css }}
-  {% if not actions_on_top and not actions_on_bottom %}
-    <style>
-      #changelist table thead th:first-child {width: inherit}
-    </style>
-  {% endif %}
     {{ media.js }}
     {% if action_form %}{% if actions_on_top or actions_on_bottom %}
     <script type="text/javascript">
@@ -28,8 +22,6 @@
     </script>
     {% endif %}{% endif %}
 {% endblock %}
-
-{% block bodyclass %}change-list{% endblock %}
 
 {% if not is_popup %}
     {% block breadcrumb_bits %}
@@ -44,7 +36,7 @@
         {% if has_add_permission %}
             <ul class="object-tools">
                 <li>
-                    <a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
+                    <a href="add/{% if is_popup %}?_popup=1{% endif %}" class="button small">
                         {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
                     </a>
                 </li>
@@ -52,10 +44,10 @@
         {% endif %}
     {% endblock %}
     {% if cl.formset.errors %}
-            <p class="errornote">
+        <p class="errornote">
             {% blocktrans count cl.formset.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
-            </p>
-            {{ cl.formset.non_form_errors }}
+        </p>
+        {{ cl.formset.non_form_errors }}
     {% endif %}
     <div class="module{% if cl.has_filters %} filtered{% endif %}" id="changelist">
         {% block search %}{% search_form cl %}{% endblock %}
