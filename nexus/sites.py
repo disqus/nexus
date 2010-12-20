@@ -4,7 +4,7 @@ from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.template import RequestContext, Context
+from django.template import RequestContext
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.utils.functional import update_wrapper

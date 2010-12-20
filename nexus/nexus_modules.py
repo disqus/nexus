@@ -2,6 +2,8 @@ import nexus
 
 from django.conf import settings
 from django.contrib import admin
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 
 def make_nexus_model_admin(model_admin):
     class NexusModelAdmin(model_admin.__class__):
@@ -80,9 +82,8 @@ def make_nexus_admin_site(admin_site):
     class NexusAdminSite(admin_site.__class__):
         index_template = 'nexus/admin/index.html'
         app_index_template = 'nexus/admin/app_index.html'
-
-        # def __init__(self, name, app_name):
-        #     super(NexusAdminSite, self).__init__(name, app_name)
+        password_change_template = 'nexus/admin/password_change_form.html'
+        password_change_done_template = 'nexus/admin/password_change_done.html'
 
         def has_permission(self, request):
             return self.module.site.has_permission(request)
@@ -97,6 +98,28 @@ def make_nexus_admin_site(admin_site):
 
         def app_index(self, request, app_label, extra_context=None):
             return super(NexusAdminSite, self).app_index(request, app_label, self.get_context(request))
+
+        def password_change(self, request):
+            from django.contrib.auth.forms import PasswordChangeForm
+            if self.root_path is not None:
+                post_change_redirect = '%spassword_change/done/' % self.root_path
+            else:
+                post_change_redirect = reverse('admin:password_change_done', current_app=self.name)
+
+            if request.method == "POST":
+                form = PasswordChangeForm(user=request.user, data=request.POST)
+                if form.is_valid():
+                    form.save()
+                    return HttpResponseRedirect(post_change_redirect)
+            else:
+                form = PasswordChangeForm(user=request.user)
+
+            return self.module.render_to_response(self.password_change_template, {
+                'form': form,
+            }, request)
+
+        def password_change_done(self, request):
+            return self.module.render_to_response(self.password_change_done_template, {}, request)
     return NexusAdminSite
 
 class AdminModule(nexus.NexusModule):
