@@ -512,6 +512,10 @@ fieldset.monospace textarea {
     right: 0;
 }
 
+#changelist #toolbar-placeholder {
+    height: 28px;
+}
+
 #changelist #toolbar form input {
     font-size: 11px;
     padding: 1px 2px;
@@ -528,14 +532,13 @@ fieldset.monospace textarea {
 /* FILTER COLUMN */
 
 #changelist-filter {
-    position: absolute;
-    top: 28px;
-    right: 0;
+    position: static;
+    float: right;
+    margin-top: 28px;
     z-index: 1000;
     width: 160px;
     border: 1px solid #eee;
     background: #fff;
-    margin: 0;
 }
 
 #changelist-filter h2 {
@@ -622,7 +625,7 @@ fieldset.monospace textarea {
     padding-top: 10px;
     padding-bottom: 10px;
     line-height: 22px;
-    margin: 0;
+    margin-top: 5px;
     border-top: 1px solid #ddd;
 }
 
