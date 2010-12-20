@@ -145,8 +145,8 @@ fieldset h2 {
 }
 
 #navigation li.selected a {
-    background: #fff;
-    color: #5A7C9D;
+    background: #fff !important;
+    color: #5A7C9D !important;
 }
 #navigation li a:hover {
     color: #000;
