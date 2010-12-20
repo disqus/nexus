@@ -30,8 +30,10 @@ class NexusModule(object):
         return self.site.as_view(*args, **kwargs)
     
     def get_context(self, request):
+        title = self.get_title()
         return {
-            'title': self.get_title(),
+            'title': title,
+            'module_title': title,
             'trail_bits': self.get_trail(request),
         }
     
