@@ -104,8 +104,6 @@ class NexusSite(object):
         else:
             current_app = '%s:%s' % (self.name, current_app)
         
-        print current_app
-        
         context_instance = RequestContext(request, current_app=current_app)
 
         context.update(self.get_context(request))
