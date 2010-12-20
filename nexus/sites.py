@@ -89,6 +89,7 @@ class NexusSite(object):
         context = csrf(request)
         context.update({
             'request': request,
+            'nexus_site': self,
             'nexus_media_prefix': conf.MEDIA_PREFIX,
         })
         return context
@@ -144,7 +145,6 @@ class NexusSite(object):
         "Basic dashboard panel"
         # TODO: these should be ajax
         module_set = []
-        link_set = []
         for module in self._registry.itervalues():
             if module.home_url:
                 home_url = reverse('nexus:%s' % (module.get_home_url(),), current_app=self.name)
@@ -153,12 +153,9 @@ class NexusSite(object):
 
             if hasattr(module, 'render_on_dashboard'):
                 module_set.append((module.get_dashboard_title(), module.render_on_dashboard(request), home_url))
-            if home_url:
-                link_set.append((module.get_title(), home_url))
         
         return self.render_to_response('nexus/dashboard.html', {
             'module_set': module_set,
-            'link_set': link_set,
         }, request)
 
 # setup the default site

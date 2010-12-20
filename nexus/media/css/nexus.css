@@ -81,6 +81,7 @@ fieldset h2 {
     background: -webkit-gradient(linear, left top, left bottom, from(#437ba3), to(#234b6f)); /* for webkit browsers */
     background: -moz-linear-gradient(top,  #555,  #437ba3); /* for firefox 3.6+ */        
     padding: 20px;
+    margin: 0 0 20px;
 }
 
 #header h1, #header h2 {
@@ -115,8 +116,45 @@ fieldset h2 {
     color: #ccc;
 }
 
+#navigation {
+}
+
+#navigation ul {
+    list-style: none;
+    margin: 0;
+    text-align: right;
+}
+
+#navigation li {
+    display: inline-block;
+}
+
+#navigation li a {
+    color: #666;
+    display: inline-block;
+    -webkit-border-radius: 6px 6px 0 0;
+    -moz-border-radius: 6px 6px 0 0;
+    border-radius: 6px 6px 0 0;
+    
+    padding: 5px 12px;
+    text-decoration: none;
+    
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);    
+}
+
+#navigation li.selected a {
+    background: #fff;
+    color: #5A7C9D;
+}
+#navigation li a:hover {
+    color: #000;
+    background: #f3f3f3;
+}
+
 #container .wrapper {
-    margin: 20px auto;
+    margin: 0 auto 20px;
     padding: 20px;
     background-color: #fff;
     

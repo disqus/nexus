@@ -1,0 +1,11 @@
+<div id="navigation">
+    <div class="wrapper">
+        {% if link_set %}
+            <ul>
+                {% for title, link, active in link_set %}
+                    <li{% if active %} class="selected"{% endif %}><a href="{{ link }}">{{ title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
