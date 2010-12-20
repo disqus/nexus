@@ -49,7 +49,9 @@
             </div>
         </div>
 
-        {% show_navigation %}
+        {% block navigation %}
+            {% show_navigation %}
+        {% endblock %}
 
         {% block container %}
             <div id="container">
