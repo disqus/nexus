@@ -117,6 +117,7 @@ fieldset h2 {
 }
 
 #navigation {
+    z-index: 100;
 }
 
 #navigation ul {
@@ -129,26 +130,59 @@ fieldset h2 {
     display: inline-block;
 }
 
-#navigation li a {
+#navigation .wrapper > ul > li > a,
+#navigation .wrapper > ul > li > span {
     color: #666;
     display: inline-block;
     -webkit-border-radius: 6px 6px 0 0;
     -moz-border-radius: 6px 6px 0 0;
     border-radius: 6px 6px 0 0;
     
+    cursor: pointer;
+    
     padding: 5px 12px;
     text-decoration: none;
     
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
     -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);    
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
 }
 
-#navigation li.selected a {
+#navigation li ul {
+    position: absolute;
+    z-index: 101;
+    display: none;
+    background: #fff;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+#navigation li:hover ul {
+    display: block;
+}
+#navigation li ul li a {
+    display: block;
+    padding: 5px 12px;
+    text-decoration: none;
+}
+
+#navigation li ul li.selected a {
     background: #fff !important;
     color: #5A7C9D !important;
 }
-#navigation li a:hover {
+
+#navigation li ul li a:hover {
+    color: #000;
+    background: #f3f3f3;
+}
+
+#navigation .wrapper > ul > li.selected > a,
+#navigation .wrapper > ul > li.selected > span {
+    background: #fff !important;
+    color: #5A7C9D !important;
+}
+#navigation .wrapper > ul > li > a:hover,
+#navigation .wrapper > ul > li:hover > span {
     color: #000;
     background: #f3f3f3;
 }

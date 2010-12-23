@@ -8,7 +8,7 @@
                         <li{% if category.active %} class="selected"{% endif %}>
                             <span>{{ category.label }}</span>
                             <ul>
-                                {% for link in category.links %}
+                                {% for title, link, active in category.links %}
                                     <li{% if active %} class="selected"{% endif %}>
                                         <a href="{{ link }}">{{ title }}</a>
                                     </li>
