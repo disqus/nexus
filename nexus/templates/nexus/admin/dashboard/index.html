@@ -18,7 +18,11 @@
 }
 </style>
 
-{% get_admin_log 5 as admin_log %}
+{% if request.user.is_superuser %}
+    {% get_admin_log 5 as admin_log %}
+{% else %}
+    {% get_admin_log 5 as admin_log for_user user %}
+{% endif %}
 
 {% if not admin_log %}
     <p>{% trans "There isn\'t any history available for the admin." %}</p>
