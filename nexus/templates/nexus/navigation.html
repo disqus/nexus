@@ -4,7 +4,7 @@
         {% if category_link_set %}
             <ul>
                 {% for category in category_link_set %}
-                    {% if category.label %}
+                    {% if category.label and category.links|length > 1 %}
                         <li{% if category.active %} class="selected"{% endif %}>
                             <span>{{ category.label }}</span>
                             <ul>
