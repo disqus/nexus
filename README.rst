@@ -49,5 +49,6 @@ Nexus by default includes a module that will automatically pick up ``django.cont
 Other applications which provide Nexus modules:
 
 * `Gargoyle <https://github.com/disqus/gargoyle>`_
+* `Memcache <https://github.com/dcramer/nexus-memcache>`_
 
 (docs on writing modules coming soon)
