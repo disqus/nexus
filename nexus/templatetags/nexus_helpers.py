@@ -1,5 +1,6 @@
 from django import template
 from django.core.urlresolvers import reverse
+from django.utils.datastructures import SortedDict
 
 register = template.Library()
 
@@ -7,8 +8,14 @@ def show_navigation(context):
     site = context['nexus_site']
     request = context['request']
     
-    link_set = []
-    for module in site._registry.itervalues():
+    category_link_set = SortedDict([(k, {
+        'label': v,
+        'links': [],
+    }) for k, v in site.get_categories()])
+
+    for namespace, module in site._registry.iteritems():
+        module, category = module
+        
         if not module.home_url:
             continue
 
@@ -16,10 +23,22 @@ def show_navigation(context):
 
         active = request.path.startswith(home_url)
 
-        link_set.append((module.get_title(), home_url, active))
+        if category not in category_link_set:
+            if category:
+                label = site.get_category_label(category)
+            else:
+                label = None
+            category_link_set[category] = {
+                'label': label,
+                'links': []
+            }
+
+        category_link_set[category]['links'].append((module.get_title(), home_url, active))
+
+        category_link_set[category]['active'] = active
 
     return {
-        'link_set': link_set,
+        'nexus_site': site,
+        'category_link_set': category_link_set.itervalues(),
     }
-
 register.inclusion_tag('nexus/navigation.html', takes_context=True)(show_navigation)

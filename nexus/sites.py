@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+from django.utils.datastructures import SortedDict
 from django.utils.functional import update_wrapper
 
 from nexus import conf
@@ -18,19 +19,26 @@ NEXUS_ROOT = os.path.dirname(__file__)
 class NexusSite(object):
     def __init__(self, name=None, app_name='nexus'):
         self._registry = {}
+        self._categories = SortedDict()
         if name is None:
             self.name = 'nexus'
         else:
             self.name = name
         self.app_name = app_name
 
-    def register(self, module, namespace=None):
-        module = module(self)
+    def register_category(self, category, label, index=None):
+        if index:
+            self._categories.insert(index, category, label)
+        else:
+            self._categories[category] = label
+
+    def register(self, module, namespace=None, category=None):
+        module = module(self, category)
         if not namespace:
             namespace = module.get_namespace()
         if namespace:
             module.app_name = module.name = namespace
-        self._registry[namespace] = module
+        self._registry[namespace] = (module, category)
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
@@ -49,13 +57,12 @@ class NexusSite(object):
         urlpatterns = patterns('',
             url(r'^', include(base_urls)),
         )
-        for namespace, module in self._registry.iteritems():
+        for namespace, module in self.get_modules():
             urlpatterns += patterns('',
                 url(r'^%s/' % namespace, include(module.urls)),
             )
         
         return urlpatterns
-
     def urls(self):
         return self.get_urls()
 
@@ -95,7 +102,17 @@ class NexusSite(object):
             'nexus_media_prefix': conf.MEDIA_PREFIX,
         })
         return context
-        
+
+    def get_modules(self):
+        for k, v in self._registry.iteritems():
+            yield k, v[0]
+
+    def get_categories(self):
+        for k, v in self._categories.iteritems():
+            yield k, v
+
+    def get_category_label(self, category):
+        return self._categories.get(category, category.title().replace('_', ' '))
 
     def render_to_response(self, template, context, request, current_app=None):
         "Shortcut for rendering to response and default context instances"
@@ -147,7 +164,7 @@ class NexusSite(object):
         "Basic dashboard panel"
         # TODO: these should be ajax
         module_set = []
-        for module in self._registry.itervalues():
+        for namespace, module in self.get_modules():
             if module.home_url:
                 home_url = reverse(module.get_home_url(), current_app=self.name)
             else:

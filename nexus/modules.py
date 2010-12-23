@@ -5,9 +5,13 @@ from django.template import RequestContext, Context
 import hashlib
 
 class NexusModule(object):
+    # base url (pattern name) to show in navigation
     home_url = None
+    # generic permission required
+    permission = None
     
-    def __init__(self, site, name=None, app_name=None):
+    def __init__(self, site, category=None, name=None, app_name=None):
+        self.category = category
         self.site = site
         self.name = name
         self.app_name = app_name
