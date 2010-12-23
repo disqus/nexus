@@ -112,7 +112,7 @@ class NexusSite(object):
             yield k, v[0]
     
     def get_module(self, module):
-        return self._registry[module]
+        return self._registry[module][0]
 
     def get_categories(self):
         for k, v in self._categories.iteritems():
@@ -145,7 +145,7 @@ class NexusSite(object):
         if module == 'nexus':
             document_root = os.path.join(NEXUS_ROOT, 'media')
         else:
-            document_root = self.get_module(module)
+            document_root = self.get_module(module).media_root
         
         path = posixpath.normpath(urllib.unquote(path))
         path = path.lstrip('/')

@@ -18,7 +18,8 @@ class NexusModule(object):
         self.name = name
         self.app_name = app_name
         if not self.media_root:
-            self.media_root = os.path.normpath(os.path.join(os.path.dirname(__file__), os.pardir, 'media'))
+            mod = __import__(self.__class__.__module__)
+            self.media_root = os.path.normpath(os.path.join(os.path.dirname(mod.__file__), 'media'))
 
     def render_to_string(self, template, context={}, request=None):
         if request:
