@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 from django.template import RequestContext, Context
 
 import hashlib
+import os
 
 class NexusModule(object):
     # base url (pattern name) to show in navigation
