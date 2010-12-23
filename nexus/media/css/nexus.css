@@ -422,12 +422,12 @@ fieldset h2 {
 .dashboard-module-content {
     
 }
-.dashboard-module-content table {
+table {
     width: 100%;
 }
-.dashboard-module-content caption {
+caption {
     margin-bottom: 5px;
 }
-.dashboard-module-content table tbody th {
+table tbody th {
     text-align: left;
 }
