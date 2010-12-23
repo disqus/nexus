@@ -9,12 +9,15 @@ class NexusModule(object):
     home_url = None
     # generic permission required
     permission = None
+    media_root = None
     
     def __init__(self, site, category=None, name=None, app_name=None):
         self.category = category
         self.site = site
         self.name = name
         self.app_name = app_name
+        if not self.media_root:
+            self.media_root = os.path.normpath(os.path.join(os.path.dirname(__file__), os.pardir, 'media'))
 
     def render_to_string(self, template, context={}, request=None):
         if request:

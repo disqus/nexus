@@ -2,19 +2,26 @@
 
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotModified, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
 from django.utils.datastructures import SortedDict
 from django.utils.functional import update_wrapper
+from django.utils.http import http_date
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.static import was_modified_since
 
 from nexus import conf
 
+import mimetypes
+import os
 import os.path
+import posixpath
+import stat
+import urllib
 
-NEXUS_ROOT = os.path.dirname(__file__)
+NEXUS_ROOT = os.path.normpath(os.path.dirname(__file__))
 
 class NexusSite(object):
     def __init__(self, name=None, app_name='nexus'):
@@ -44,10 +51,7 @@ class NexusSite(object):
         from django.conf.urls.defaults import patterns, url, include
 
         base_urls = patterns('',
-            url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-                'document_root': os.path.join(NEXUS_ROOT, 'media'),
-                'show_indexes': True,
-            }, name='nexus-media'),
+            url(r'^media/(?P<module>[^/]+)/(?P<path>.+)$', self.media, name='nexus-media'),
 
             url(r'^$', self.as_view(self.dashboard), name='index'),
             url(r'^login/$', self.login, name='login'),
@@ -99,13 +103,16 @@ class NexusSite(object):
         context.update({
             'request': request,
             'nexus_site': self,
-            'nexus_media_prefix': conf.MEDIA_PREFIX,
+            'nexus_media_prefix': conf.MEDIA_PREFIX.rstrip('/'),
         })
         return context
 
     def get_modules(self):
         for k, v in self._registry.iteritems():
             yield k, v[0]
+    
+    def get_module(self, module):
+        return self._registry[module]
 
     def get_categories(self):
         for k, v in self._categories.iteritems():
@@ -130,6 +137,47 @@ class NexusSite(object):
         )
 
     ## Our views
+    
+    def media(self, request, module, path):
+        """
+        Serve static files below a given point in the directory structure.
+        """
+        if module == 'nexus':
+            document_root = os.path.join(NEXUS_ROOT, 'media')
+        else:
+            document_root = self.get_module(module)
+        
+        path = posixpath.normpath(urllib.unquote(path))
+        path = path.lstrip('/')
+        newpath = ''
+        for part in path.split('/'):
+            if not part:
+                # Strip empty path components.
+                continue
+            drive, part = os.path.splitdrive(part)
+            head, part = os.path.split(part)
+            if part in (os.curdir, os.pardir):
+                # Strip '.' and '..' in path.
+                continue
+            newpath = os.path.join(newpath, part).replace('\\', '/')
+        if newpath and path != newpath:
+            return HttpResponseRedirect(newpath)
+        fullpath = os.path.join(document_root, newpath)
+        if os.path.isdir(fullpath):
+            raise Http404("Directory indexes are not allowed here.")
+        if not os.path.exists(fullpath):
+            raise Http404('"%s" does not exist' % fullpath)
+        # Respect the If-Modified-Since header.
+        statobj = os.stat(fullpath)
+        mimetype = mimetypes.guess_type(fullpath)[0] or 'application/octet-stream'
+        if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
+                                  statobj[stat.ST_MTIME], statobj[stat.ST_SIZE]):
+            return HttpResponseNotModified(mimetype=mimetype)
+        contents = open(fullpath, 'rb').read()
+        response = HttpResponse(contents, mimetype=mimetype)
+        response["Last-Modified"] = http_date(statobj[stat.ST_MTIME])
+        response["Content-Length"] = len(contents)
+        return response        
 
     def login(self, request):
         "Login form"
