@@ -463,5 +463,35 @@ caption {
     margin-bottom: 5px;
 }
 table tbody th {
-    text-align: left;
+    padding: 3px;
+    text-align: right;
+}
+
+.capacity-graph {
+    height: 1.2em;
+    margin-bottom: 5px;
+    background-color: #437ba3;
+    -webkit-box-shadow: 0.1em 0.1em 0.2em #aaa;
+    -moz-box-shadow: 0.1em 0.1em 0.2em #aaa;
+    position: relative;
+}
+
+.capacity-graph div {
+    height: 1.2em;
+    background-color: #E84A2F;
+}
+
+.capacity-graph strong {
+    height: 1.2em;
+    display: block;
+    vertical-align: middle;
+    line-height: 1.7em;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    color: #fff;
+    font-size: 9px;
+    text-align: center;
 }
