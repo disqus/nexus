@@ -46,6 +46,7 @@ class NexusSite(object):
         if namespace:
             module.app_name = module.name = namespace
         self._registry[namespace] = (module, category)
+        return module
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
