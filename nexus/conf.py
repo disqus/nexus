@@ -1,3 +1,5 @@
-from django.conf import settings
-
-MEDIA_PREFIX = getattr(settings, 'NEXUS_MEDIA_PREFIX', '/nexus/media/')
+class NexusConfig(object):
+    DEBUG = False
+    TESTING = False
+    MEDIA_PREFIX = '/nexus/media/'
+    # DATABASE_URI = 'sqlite://:memory:'

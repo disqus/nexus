@@ -24,7 +24,9 @@ setup(
     description = 'An extendable admin interface',
     packages=find_packages(),
     zip_safe=False,
-    install_requires=[],
+    install_requires=[
+        'Flask',
+    ],
     test_suite = 'nexus.tests',
     include_package_data=True,
     cmdclass={"test": mytest},

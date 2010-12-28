@@ -1,19 +1,20 @@
 # Core site concept heavily inspired by django.contrib.sites
 
-from django.core.context_processors import csrf
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotModified, Http404
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.utils.datastructures import SortedDict
-from django.utils.functional import update_wrapper
-from django.utils.http import http_date
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.static import was_modified_since
+from __future__ import absolute_import
 
-from nexus import conf
+# from django.core.urlresolvers import reverse
+# from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotModified, Http404
+# from django.utils.datastructures import SortedDict
+# from django.utils.functional import update_wrapper
+# from django.utils.http import http_date
+# from django.views.decorators.cache import never_cache
+# from django.views.static import was_modified_since
 
+from nexus import app
+from nexus.utils.routes import include, url, reverse, RouteInclusion
+from nexus.utils.template import render_template
+
+import hashlib
 import mimetypes
 import os
 import os.path
@@ -23,55 +24,80 @@ import urllib
 
 NEXUS_ROOT = os.path.normpath(os.path.dirname(__file__))
 
-class NexusSite(object):
-    def __init__(self, name=None, app_name='nexus'):
-        self._registry = {}
-        self._categories = SortedDict()
-        if name is None:
-            self.name = 'nexus'
-        else:
-            self.name = name
-        self.app_name = app_name
+def get_routes(route_set):
+    for routes, module_name, app_name in route_set:
+        for route_data in routes:
+            if isinstance(route_data, RouteInclusion):
+                for path, view, name in get_routes(route_data):
+                    path = '/%s/%s' % (app_name, path)
+                    name = '%s:%s' % (app_name, module_name, name)
+                    yield path, view, name
+            else:
+                path, view, name = route_data
+                path = '/%s/%s' % (app_name, path)
+                name = '%s:%s' % (app_name, module_name, name)
+                yield path, view, name
 
+# Currently Nexus does not support multiple sites
+
+# TODO: NexusSite should inherit from NexusModule to provide recursion on application namespaces,
+# url patterns, etc. etc.
+# XXX: should submodules contain dashboard behavior?
+
+class NexusModule(object):
+    # base url (pattern name) to show in navigation
+    home_url = None
+    # generic permission required
+    permission = None
+    # filesystem root location of media -- defaults to MODULE/media/
+    media_root = None
+
+    @classmethod
+    def get_namespace(self):
+        return hashlib.md5(self.__class__.__module__ + '.' + self.__class__.__name__).hexdigest()
+
+    def __init__(self, name, app_name, parent=None):
+        self._registry = {}
+        self._routes = None
+        #self._categories = SortedDict()
+        self.name = name
+        self.app_name = app_name
+        self.parent = parent
+        if not self.media_root:
+            this = __import__(self.__class__.__module__)
+            self.media_root = os.path.normpath(os.path.join(os.path.dirname(this.__file__), 'media'))
+        
     def register_category(self, category, label, index=None):
         if index:
             self._categories.insert(index, category, label)
         else:
             self._categories[category] = label
 
-    def register(self, module, namespace=None, category=None):
-        module = module(self, category)
-        if not namespace:
-            namespace = module.get_namespace()
-        if namespace:
-            module.app_name = module.name = namespace
-        self._registry[namespace] = (module, category)
+    def register(self, module, name=None, app_name=None, category=None):
+        if not name:
+            name = module.get_namespace()
+        if not app_name:
+            app_name = name
+        if app_name in self._registry:
+            raise ValueError('%s is already registered as %r' % (app_name, self._registry[app_name][0]))
+        module = module(self, name, app_name)
+        self._registry[app_name] = (module, category)
         return module
 
     def get_urls(self):
-        from django.conf.urls.defaults import patterns, url, include
-
-        base_urls = patterns('',
-            url(r'^media/(?P<module>[^/]+)/(?P<path>.+)$', self.media, name='nexus-media'),
-
-            url(r'^$', self.as_view(self.dashboard), name='index'),
-            url(r'^login/$', self.login, name='login'),
-            url(r'^logout/$', self.as_view(self.logout), name='logout'),
-        ), self.app_name, self.name
-        
-        urlpatterns = patterns('',
-            url(r'^', include(base_urls)),
-        )
-        for namespace, module in self.get_modules():
-            urlpatterns += patterns('',
-                url(r'^%s/' % namespace, include(module.urls)),
+        for module in self.get_modules():
+            routes.append(
+                include(module.urls),
             )
-        
-        return urlpatterns
+    
     def urls(self):
-        return self.get_urls()
+        return self.get_urls(), self.name, self.app_name
 
     urls = property(urls)
+
+    def setup_routes(self):
+        for path, view, name in get_routes(self.urls):
+            app.add_url_rule(path, name, view_func=view)
 
     def has_permission(self, request):
         """
@@ -92,25 +118,19 @@ class NexusSite(object):
         if not cacheable:
             inner = never_cache(inner)
 
-        # We add csrf_protect here so this function can be used as a utility
-        # function for any view, without having to repeat 'csrf_protect'.
-        if not getattr(view, 'csrf_exempt', False):
-            inner = csrf_protect(inner)
-
         return update_wrapper(inner, view)
 
     def get_context(self, request):
-        context = csrf(request)
-        context.update({
+        context = {
             'request': request,
             'nexus_site': self,
             'nexus_media_prefix': conf.MEDIA_PREFIX.rstrip('/'),
-        })
+        }
         return context
 
     def get_modules(self):
-        for k, v in self._registry.iteritems():
-            yield k, v[0]
+        for module, category in self._registry.itervalues():
+            yield module
     
     def get_module(self, module):
         return self._registry[module][0]
@@ -122,6 +142,37 @@ class NexusSite(object):
     def get_category_label(self, category):
         return self._categories.get(category, category.title().replace('_', ' '))
 
+    def get_title(self):
+        return self.__class__.__name__
+
+    def get_dashboard_title(self):
+        return self.get_title()
+
+    def get_home_url(self):
+        return '%s:%s' % (self.app_name, self.home_url)
+
+    def get_app_name(self):
+        if self.parent:
+            app_name '%s:%s' % (self.parent.get_app_name(), self.parent.name)
+        else:
+            app_name = ''
+        return self.app_name
+
+    def get_trail(self, request):
+        if self.parent:
+            trail = self.parent.get_trail()
+        else:
+            trail = []
+
+        trail.append((self.get_title(), reverse(self.get_home_url(), current_app=self.get_app_name())))
+
+        return trail
+
+    # Helper methods for HTTP
+
+    def redirect(self, path, code=302):
+        return app.redirect(path, code=code)
+
     def render_to_response(self, template, context, request, current_app=None):
         "Shortcut for rendering to response and default context instances"
         if not current_app:
@@ -129,14 +180,21 @@ class NexusSite(object):
         else:
             current_app = '%s:%s' % (self.name, current_app)
         
-        context_instance = RequestContext(request, current_app=current_app)
-
         context.update(self.get_context(request))
         
-        return render_to_response(template, context,
-            context_instance=context_instance
-        )
+        template = render_template(template, context)
+        
+        return respond(template)
 
+class NexusSite(NexusModule):
+    def get_urls(self):
+        return [
+            url('/', self.as_view(self.dashboard), 'index'),
+            url('/login/', self.login, 'login'),
+            url('/logout/', self.as_view(self.logout), 'logout'),
+            url('/media/<module>/<path>', self.media, 'media'),
+        ]
+        
     ## Our views
     
     def media(self, request, module, path):
@@ -162,7 +220,7 @@ class NexusSite(object):
                 continue
             newpath = os.path.join(newpath, part).replace('\\', '/')
         if newpath and path != newpath:
-            return HttpResponseRedirect(newpath)
+            return self.redirect(newpath)
         fullpath = os.path.join(document_root, newpath)
         if os.path.isdir(fullpath):
             raise Http404("Directory indexes are not allowed here.")
@@ -189,7 +247,7 @@ class NexusSite(object):
             form = AuthenticationForm(request, request.POST)
             if form.is_valid():
                 login_(request, form.get_user())
-                return HttpResponseRedirect(request.POST.get('next') or reverse('nexus:index', current_app=self.name))
+                return self.redirect(request.POST.get('next') or reverse('nexus:index', current_app=self.name))
             else:
                 request.session.set_test_cookie()
         else:
@@ -207,7 +265,7 @@ class NexusSite(object):
 
         logout(request)
 
-        return HttpResponseRedirect(reverse('nexus:index', current_app=self.name))
+        return self.redirect(reverse('nexus:index', current_app=self.name))
 
     def dashboard(self, request):
         "Basic dashboard panel"
@@ -227,6 +285,5 @@ class NexusSite(object):
         }, request)
 
 # setup the default site
-
-site = NexusSite()
+site = NexusSite('nexus', 'nexus')
 

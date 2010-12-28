@@ -1,9 +1,15 @@
 Nexus
 -----
 
-Nexus is a pluggable admin application in Django. It's designed to give you a simple design and architecture for building admin applications.
+Nexus is a pluggable admin application for Python. It's designed to give you a simple design and architecture for building admin applications.
 
 (This project is still under active development)
+
+Requirements
+============
+
+* Python >= 2.5
+* Flask
 
 Screenshot
 ==========
