@@ -12,7 +12,7 @@ except Exception, e:
 from flask import Flask
 
 app = Flask(__name__)
-app.config.from_object('nexus.conf.DefaultConfig')
+app.config.from_object('nexus.conf.NexusConfig')
 app.config.from_envvar('NEXUS_SETTINGS', silent=True)
 
 # from nexus.sites import NexusSite, site

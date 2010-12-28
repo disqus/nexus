@@ -25,7 +25,7 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=[
-        'Flask',
+        'Flask>=0.6',
     ],
     test_suite = 'nexus.tests',
     include_package_data=True,
