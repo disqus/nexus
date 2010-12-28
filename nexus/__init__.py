@@ -15,6 +15,8 @@ app = Flask(__name__)
 app.config.from_object('nexus.conf.NexusConfig')
 app.config.from_envvar('NEXUS_SETTINGS', silent=True)
 
+import nexus.sites
+
 # from nexus.sites import NexusSite, site
 # from nexus.modules import NexusModule
 # 

@@ -11,26 +11,12 @@ from flask import render_template, make_response
 from functools import wraps
 
 from nexus import app
-from nexus.utils.routes import include, reverse, RouteInclusion
+from nexus.utils.routes import include, reverse
 
 import hashlib
 import os.path
 
 NEXUS_ROOT = os.path.normpath(os.path.dirname(__file__))
-
-def get_routes(route_set):
-    for routes, module_name, app_name in route_set:
-        for route_data in routes:
-            if isinstance(route_data, RouteInclusion):
-                for path, view, name in get_routes(route_data):
-                    path = '/%s/%s' % (app_name, path)
-                    name = '%s:%s' % (app_name, module_name, name)
-                    yield path, view, name
-            else:
-                path, view, name = route_data
-                path = '/%s/%s' % (app_name, path)
-                name = '%s:%s' % (app_name, module_name, name)
-                yield path, view, name
 
 class NexusModule(object):
     # base url (pattern name) to show in navigation
@@ -81,10 +67,6 @@ class NexusModule(object):
         return self.get_urls(), self.name, self.app_name
 
     urls = property(urls)
-
-    def setup_routes(self):
-        for path, view, name in get_routes(self.urls):
-            app.add_url_rule(path, name, view_func=view)
 
     def has_permission(self, request):
         """

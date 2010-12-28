@@ -7,19 +7,30 @@ import posixpath
 import stat
 import urllib
 
+from nexus import app
 from nexus.modules import NexusModule
-from nexus.utils.routes import reverse, url
+from nexus.utils.routes import reverse, url, get_routes
 
 NEXUS_ROOT = os.path.normpath(os.path.dirname(__file__))
 
 class NexusSite(NexusModule):
+    def __init__(self, *args, **kwargs):
+        super(NexusSite, self).__init__(*args, **kwargs)
+        self.setup_routes()
+
+    def setup_routes(self):
+        for path, view, name in get_routes(self.urls):
+            app.add_url_rule(path, name, view_func=view)
+
     def get_urls(self):
-        return [
+        routes = [
             url('/', self.as_view(self.dashboard), 'index'),
             url('/login/', self.login, 'login'),
             url('/logout/', self.as_view(self.logout), 'logout'),
             url('/media/<module>/<path>', self.media, 'media'),
         ]
+        routes.extend(super(NexusSite, self).get_urls())
+        return routes
         
     ## Our views
     
@@ -83,7 +94,7 @@ class NexusSite(NexusModule):
         return self.render_to_response('nexus/login.html', {
             'form': form,
         }, request)
-    login = never_cache(login)
+    #login = never_cache(login)
     
     def logout(self, request):
         "Logs out user and redirects them to Nexus home"
