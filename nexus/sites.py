@@ -129,7 +129,10 @@ class NexusSite(object):
         else:
             current_app = '%s:%s' % (self.name, current_app)
         
-        context_instance = RequestContext(request, current_app=current_app)
+        if request:
+            context_instance = RequestContext(request, current_app=current_app)
+        else:
+            context_instance = None
 
         context.update(self.get_context(request))
         
@@ -144,7 +147,10 @@ class NexusSite(object):
         else:
             current_app = '%s:%s' % (self.name, current_app)
         
-        context_instance = RequestContext(request, current_app=current_app)
+        if request:
+            context_instance = RequestContext(request, current_app=current_app)
+        else:
+            context_instance = None
 
         context.update(self.get_context(request))
         
