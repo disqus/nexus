@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotModified, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.functional import update_wrapper
 from django.utils.http import http_date
@@ -122,6 +123,20 @@ class NexusSite(object):
     def get_category_label(self, category):
         return self._categories.get(category, category.title().replace('_', ' '))
 
+    def render_to_string(self, template, context, request, current_app=None):
+        if not current_app:
+            current_app = self.name
+        else:
+            current_app = '%s:%s' % (self.name, current_app)
+        
+        context_instance = RequestContext(request, current_app=current_app)
+
+        context.update(self.get_context(request))
+        
+        return render_to_string(template, context,
+            context_instance=context_instance
+        )
+
     def render_to_response(self, template, context, request, current_app=None):
         "Shortcut for rendering to response and default context instances"
         if not current_app:
@@ -189,6 +204,7 @@ class NexusSite(object):
             form = AuthenticationForm(request, request.POST)
             if form.is_valid():
                 login_(request, form.get_user())
+                request.session.save()
                 return HttpResponseRedirect(request.POST.get('next') or reverse('nexus:index', current_app=self.name))
             else:
                 request.session.set_test_cookie()

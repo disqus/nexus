@@ -21,15 +21,9 @@ class NexusModule(object):
             mod = __import__(self.__class__.__module__)
             self.media_root = os.path.normpath(os.path.join(os.path.dirname(mod.__file__), 'media'))
 
-    def render_to_string(self, template, context={}, request=None):
-        if request:
-            context_instance = RequestContext(request)
-        else:
-            context_instance = Context()
-        
-        return render_to_string(template, context,
-            context_instance=context_instance
-        )
+    def render_to_string(self, template, context, request):
+        context.update(self.get_context(request))
+        return self.site.render_to_string(template, context, request, current_app=self.name)
 
     def render_to_response(self, template, context, request):
         context.update(self.get_context(request))
