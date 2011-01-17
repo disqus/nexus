@@ -105,10 +105,23 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
 )
 
-for mod in ('gargoyle', 'nexus_memcache', 'sentry'):
+SENTRY_THRASHING_TIMEOUT = 0
+SENTRY_TESTING = True
+SENTRY_SITE = 'example'
+SENTRY_PUBLIC = False
+
+# just to test
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+
+SENTRY_SEARCH_ENGINE = 'whoosh'
+SENTRY_SEARCH_OPTIONS = {
+    'path': os.path.join(PROJECT_ROOT, 'sentry_index'),
+}
+
+# TODO: fix gargoyle
+for mod in ('paging', 'indexer', 'nexus_memcache', 'sentry', 'sentry.client', 'gargoyle'):
     try:
-        __import__('pkg_resources') \
-            .get_distribution(mod).version
+        __import__(mod)
     except Exception, e:
         pass
     else:

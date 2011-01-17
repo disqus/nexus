@@ -9,19 +9,21 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-    {% for title, content, link in module_set %}
-        <div class="dashboard-module">
-            <div class="dashboard-module-title">
-                {{ title }}
-                {% if link %}
-                    <a href="{{ link }}" class="go-link">More &rsaquo;</a>
-                {% endif %}
+    <div id="dashboard">
+        {% for title, content, link in module_set %}
+            <div class="dashboard-module">
+                <div class="dashboard-module-title">
+                    {{ title }}
+                    {% if link %}
+                        <a href="{{ link }}" class="go-link">More &rsaquo;</a>
+                    {% endif %}
+                </div>
+                <div class="dashboard-module-content">
+                    {{ content }}
+                </div>
             </div>
-            <div class="dashboard-module-content">
-                {{ content }}
-            </div>
-        </div>
-    {% empty %}
-        <p>We did not detect any Nexus dashboard modules.</p>
-    {% endfor %}
+        {% empty %}
+            <p>We did not detect any Nexus dashboard modules.</p>
+        {% endfor %}
+    </div>
 {% endblock %}

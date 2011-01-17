@@ -71,8 +71,8 @@ fieldset h2 {
 
 .wrapper {
     position: relative;
-    min-width: 600px;
-    max-width: 1400px;
+    min-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -117,6 +117,7 @@ fieldset h2 {
 }
 
 #navigation {
+    padding: 0 15px;
     z-index: 100;
 }
 
@@ -187,6 +188,7 @@ fieldset h2 {
     background: #f3f3f3;
 }
 
+#container { padding: 0 10px; }
 #container .wrapper {
     margin: 0 auto 20px;
     padding: 20px;
@@ -429,6 +431,9 @@ fieldset h2 {
 }
 
 /* dashboard styles */
+#dashboard {
+    text-align: center;
+}
 
 .dashboard-module {
     display: inline-block;
