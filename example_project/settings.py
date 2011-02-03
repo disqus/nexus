@@ -119,7 +119,9 @@ SENTRY_SEARCH_OPTIONS = {
 }
 
 # TODO: fix gargoyle
-for mod in ('paging', 'indexer', 'nexus_memcache', 'sentry', 'sentry.client', 'gargoyle'):
+for mod in ('paging', 'indexer', 'nexus_memcache', 'sentry', 'sentry.client',
+            'sentry.plugins.sentry_urls', 'sentry.plugins.sentry_sites', 'sentry.plugins.sentry_servers',
+            'gargoyle'):
     try:
         __import__(mod)
     except Exception, e:
