@@ -1,13 +1,11 @@
 {% extends "nexus/base.html" %}
 {% load i18n l10n %}
 
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-     <a href="../../">{% trans "Home" %}</a> &rsaquo;
-     <a href="../">{{ app_label|capfirst }}</a> &rsaquo;
-     <a href="./">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
-     {% trans 'Delete multiple objects' %}
-</div>
+{% block breadcrumb_bits %}
+     <li><a href="../../../../">{% trans "Model Admin" %}</a></li>
+     <li><a href="../../../">{{ app_label|capfirst }}</a></li>
+     <li><a href="../../">{{ opts.verbose_name_plural|capfirst }}</a></li>
+     <li><span>{% trans 'Delete multiple objects' %}</span></li>
 {% endblock %}
 
 {% block content %}
