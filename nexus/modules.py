@@ -1,16 +1,22 @@
 from django.core.urlresolvers import reverse
-from django.template.loader import render_to_string
-from django.template import RequestContext, Context
+from django.http import HttpRequest
 
 import hashlib
+import inspect
 import os
+import thread
 
 class NexusModule(object):
     # base url (pattern name) to show in navigation
     home_url = None
+
     # generic permission required
     permission = None
+
     media_root = None
+
+    # list of active sites within process
+    _globals = {}
     
     def __init__(self, site, category=None, name=None, app_name=None):
         self.category = category
@@ -20,6 +26,43 @@ class NexusModule(object):
         if not self.media_root:
             mod = __import__(self.__class__.__module__)
             self.media_root = os.path.normpath(os.path.join(os.path.dirname(mod.__file__), 'media'))
+
+    def __getattribute__(self, name):
+        NexusModule.set_global('site', object.__getattribute__(self, 'site'))
+        return object.__getattribute__(self, name)
+
+    @classmethod
+    def set_global(cls, key, value):
+        ident = thread.get_ident()
+        if ident not in cls._globals:
+            cls._globals[ident] = {}
+        cls._globals[ident][key] = value
+    
+    @classmethod
+    def get_global(cls, key):
+        return cls._globals.get(thread.get_ident(), {}).get(key)
+    
+    @classmethod
+    def get_request(cls):
+        """
+        Get the HTTPRequest object from thread storage or from a callee by searching
+        each frame in the call stack.
+        """
+        request = cls.get_global('request')
+        if request:
+            return request
+        try:
+            stack = inspect.stack()
+        except IndexError:
+            # in some cases this may return an index error
+            # (pyc files dont match py files for example)
+            return
+        for frame, _, _, _, _, _ in stack:
+            if 'request' in frame.f_locals:
+                if isinstance(frame.f_locals['request'], HttpRequest):
+                    request = frame.f_locals['request']
+                    cls.set_global('request', request)
+                    return request
 
     def render_to_string(self, template, context={}, request=None):
         context.update(self.get_context(request))

@@ -7,6 +7,8 @@ from django.http import HttpResponseRedirect
 
 def make_nexus_model_admin(model_admin):
     class NexusModelAdmin(model_admin.__class__):
+        delete_selected_confirmation_template = 'nexus/admin/delete_selected_confirmation.html'
+
         def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
             opts = self.model._meta
             app_label = opts.app_label
@@ -84,7 +86,7 @@ def make_nexus_admin_site(admin_site):
         app_index_template = 'nexus/admin/app_index.html'
         password_change_template = 'nexus/admin/password_change_form.html'
         password_change_done_template = 'nexus/admin/password_change_done.html'
-
+        
         def has_permission(self, request):
             return self.module.site.has_permission(request)
 
@@ -135,10 +137,10 @@ def make_admin_module(admin_site, name=None, app_name='admin'):
 
         def __init__(self, *args, **kwargs):
             super(AdminModule, self).__init__(*args, **kwargs)
-            new_site.module = self
             self.app_name = new_site.app_name
             self.name = new_site.name
-            new_site.name = self.site.name
+            new_site.module = self
+            # new_site.name = self.site.name
 
         def get_urls(self):
             return self.admin_site.get_urls()

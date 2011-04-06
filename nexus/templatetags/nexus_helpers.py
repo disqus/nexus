@@ -2,11 +2,18 @@ from django import template
 from django.core.urlresolvers import reverse
 from django.utils.datastructures import SortedDict
 
+from nexus import conf
+from nexus.modules import NexusModule
+
 register = template.Library()
 
+def nexus_media_prefix():
+    return conf.MEDIA_PREFIX.rstrip('/')
+register.simple_tag(nexus_media_prefix)
+
 def show_navigation(context):
-    site = context['nexus_site']
-    request = context['request']
+    site = context.get('nexus_site', NexusModule.get_global('site'))
+    request = NexusModule.get_request()
     
     category_link_set = SortedDict([(k, {
         'label': v,
