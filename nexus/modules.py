@@ -30,6 +30,8 @@ class NexusModule(object):
         return self.site.render_to_response(template, context, request, current_app=self.name)
 
     def as_view(self, *args, **kwargs):
+        if 'extra_permission' not in kwargs:
+            kwargs['extra_permission'] = self.permission
         return self.site.as_view(*args, **kwargs)
     
     def get_context(self, request):

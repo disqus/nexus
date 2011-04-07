@@ -74,17 +74,24 @@ class NexusSite(object):
 
     urls = property(urls)
 
-    def has_permission(self, request):
+    def has_permission(self, request, extra_permission=None):
         """
         Returns True if the given HttpRequest has permission to view
         *at least one* page in the admin site.
         """
-        return request.user.is_active and request.user.is_staff
+        permission = request.user.is_active and request.user.is_staff
+        if extra_permission:
+            permission = permission and request.user.has_perm(extra_permission)
+        return permission
 
-    def as_view(self, view, cacheable=False):
-        "Wraps a view in authentication/caching logic"
+    def as_view(self, view, cacheable=False, extra_permission=None):
+        """
+        Wraps a view in authentication/caching logic
+
+        extra_permission can be used to require an extra permission for this view, such as a module permission
+        """
         def inner(request, *args, **kwargs):
-            if not self.has_permission(request):
+            if not self.has_permission(request, extra_permission):
                 # show login pane
                 return self.login(request, *args, **kwargs)
             return view(request, *args, **kwargs)
@@ -242,7 +249,9 @@ class NexusSite(object):
                 home_url = None
 
             if hasattr(module, 'render_on_dashboard'):
-                module_set.append((module.get_dashboard_title(), module.render_on_dashboard(request), home_url))
+                # Show by default, unless a permission is required
+                if not module.permission or request.user.has_perm(module.permission):
+                    module_set.append((module.get_dashboard_title(), module.render_on_dashboard(request), home_url))
         
         return self.render_to_response('nexus/dashboard.html', {
             'module_set': module_set,
