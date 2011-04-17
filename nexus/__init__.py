@@ -52,7 +52,7 @@ def autodiscover():
         # need to roll their own admin registration.
         try:
             app_path = import_module(app).__path__
-        except AttributeError:
+        except (AttributeError, ImportError):
             continue
 
         # Step 2: use imp.find_module to find the app's admin.py. For some
