@@ -26,6 +26,9 @@ def show_navigation(context):
         if not module.home_url:
             continue
 
+        if module.permission and not request.user.has_perm(module.permission):
+            continue
+
         home_url = reverse(module.get_home_url(), current_app=module.name)
 
         active = request.path.startswith(home_url)
