@@ -24,7 +24,8 @@ setup(
     description = 'An extendable admin interface',
     packages=find_packages(),
     zip_safe=False,
-    install_requires=[
+    install_requires=[],
+    tests_require = [
         'Django',
         'South',
     ],
