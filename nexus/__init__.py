@@ -20,11 +20,13 @@ __all__ = ('autodiscover', 'NexusSite', 'NexusModule', 'site')
 # True while running, and False when it finishes.
 LOADING = False
 
-def autodiscover():
+def autodiscover(site=None):
     """
     Auto-discover INSTALLED_APPS nexus.py modules and fail silently when
     not present. This forces an import on them to register any api bits they
     may want.
+    
+    Specifying ``site`` will register all auto discovered modules with the new site.
     """
     # Bail out if autodiscover didn't finish loading from a previous call so
     # that we avoid running autodiscover again when the URLconf is loaded by
@@ -35,6 +37,10 @@ def autodiscover():
     if LOADING:
         return
     LOADING = True
+
+    if site:
+        orig_site = globals()['site']
+        globals()['site'] = site
 
     import imp
     from django.utils.importlib import import_module
@@ -69,6 +75,9 @@ def autodiscover():
         import_module("%s.nexus_modules" % app)
     # # load builtins
     # from gargoyle.builtins import *
+    
+    if site:
+        globals()['site'] = orig_site
     
     # autodiscover was successful, reset loading flag.
     LOADING = False
