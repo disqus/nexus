@@ -3,6 +3,7 @@ from django.http import HttpRequest
 
 import hashlib
 import inspect
+import logging
 import os
 import thread
 
@@ -15,6 +16,8 @@ class NexusModule(object):
 
     media_root = None
 
+    logger_name = None
+
     # list of active sites within process
     _globals = {}
     
@@ -23,6 +26,12 @@ class NexusModule(object):
         self.site = site
         self.name = name
         self.app_name = app_name
+
+        # Set up default logging for this module
+        if not self.logger_name:
+            self.logger_name = 'nexus.%s' % (self.name)
+        self.logger = logging.getLogger(self.logger_name)
+
         if not self.media_root:
             mod = __import__(self.__class__.__module__)
             self.media_root = os.path.normpath(os.path.join(os.path.dirname(mod.__file__), 'media'))

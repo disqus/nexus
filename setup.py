@@ -17,7 +17,7 @@ class mytest(test):
 
 setup(
     name='nexus',
-    version='0.1.2',
+    version='0.1.3',
     author='David Cramer',
     author_email='dcramer@gmail.com',
     url='http://github.com/dcramer/nexus',
