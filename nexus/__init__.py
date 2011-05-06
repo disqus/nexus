@@ -40,7 +40,7 @@ def autodiscover(site=None):
 
     if site:
         orig_site = globals()['site']
-        globals()['site'] = site
+        globals()['site'] = locals()['site']
 
     import imp
     from django.utils.importlib import import_module

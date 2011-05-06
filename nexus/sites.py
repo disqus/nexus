@@ -53,7 +53,7 @@ class NexusSite(object):
         from django.conf.urls.defaults import patterns, url, include
 
         base_urls = patterns('',
-            url(r'^media/(?P<module>[^/]+)/(?P<path>.+)$', self.media, name='nexus-media'),
+            url(r'^media/(?P<module>[^/]+)/(?P<path>.+)$', self.media, name='media'),
 
             url(r'^$', self.as_view(self.dashboard), name='index'),
             url(r'^login/$', self.login, name='login'),
