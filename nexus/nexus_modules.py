@@ -163,6 +163,5 @@ def make_admin_module(admin_site, name=None, app_name='admin'):
             }, request)
     return AdminModule
 
-
 if 'django.contrib.admin' in settings.INSTALLED_APPS:
     nexus.site.register(make_admin_module(admin.site, admin.site.name, admin.site.app_name), admin.site.app_name)

@@ -115,15 +115,23 @@ class NexusModule(object):
 
     urls = property(urls)
 
-    def get_home_url(self):
-        if self.app_name:
-            home_url = '%s:%s' % (self.app_name, self.home_url)
-        else:
-            home_url = self.home_url
-        return home_url
 
     def get_trail(self, request):
         return [
-            (self.get_title(), reverse(self.get_home_url(), current_app=self.app_name)),
+            (self.get_title(), self.get_home_url(request)),
         ]
+        
+    def get_home_url(self, request):
+        if self.home_url:
+            if self.app_name:
+                home_url_name = '%s:%s' % (self.app_name, self.home_url)
+            else:
+                home_url_name = self.home_url
+                
+            home_url = reverse(home_url_name, current_app=self.name)
+        else:
+            home_url = None
+            
+        return home_url
+        
 
