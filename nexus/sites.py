@@ -48,6 +48,10 @@ class NexusSite(object):
             module.app_name = module.name = namespace
         self._registry[namespace] = (module, category)
         return module
+    
+    def unregister(self, namespace):
+        if namespace in self._registry:
+            del self._registry[namespace]
 
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url, include
@@ -243,10 +247,7 @@ class NexusSite(object):
         # TODO: these should be ajax
         module_set = []
         for namespace, module in self.get_modules():
-            if module.home_url:
-                home_url = reverse(module.get_home_url(), current_app=self.name)
-            else:
-                home_url = None
+            home_url = module.get_home_url(request)
 
             if hasattr(module, 'render_on_dashboard'):
                 # Show by default, unless a permission is required

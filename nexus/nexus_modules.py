@@ -83,7 +83,7 @@ def make_nexus_model_admin(model_admin):
 def make_nexus_admin_site(admin_site):
     class NexusAdminSite(admin_site.__class__):
         index_template = 'nexus/admin/index.html'
-        app_index_template = 'nexus/admin/app_index.html'
+        app_index_template = None
         password_change_template = 'nexus/admin/password_change_form.html'
         password_change_done_template = 'nexus/admin/password_change_done.html'
         
@@ -99,6 +99,10 @@ def make_nexus_admin_site(admin_site):
             return super(NexusAdminSite, self).index(request, self.get_context(request))
 
         def app_index(self, request, app_label, extra_context=None):
+            self.app_index_template = (
+               'nexus/admin/%s/app_index.html' % app_label,
+               'nexus/admin/app_index.html'
+            )
             return super(NexusAdminSite, self).app_index(request, app_label, self.get_context(request))
 
         def password_change(self, request):

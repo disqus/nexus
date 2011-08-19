@@ -19,17 +19,17 @@ def show_navigation(context):
         'label': v,
         'links': [],
     }) for k, v in site.get_categories()])
-
+    
     for namespace, module in site._registry.iteritems():
         module, category = module
         
-        if not module.home_url:
-            continue
-
         if module.permission and not request.user.has_perm(module.permission):
             continue
 
-        home_url = reverse(module.get_home_url(), current_app=module.name)
+        home_url = module.get_home_url(context['request'])
+        
+        if not home_url:
+            continue
 
         active = request.path.startswith(home_url)
 
