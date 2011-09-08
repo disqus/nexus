@@ -26,7 +26,9 @@ def show_navigation(context):
         if module.permission and not request.user.has_perm(module.permission):
             continue
 
-        home_url = module.get_home_url(context['request'])
+        home_url = None
+        if 'request' in context:
+            home_url = module.get_home_url(context['request'])
         
         if not home_url:
             continue
