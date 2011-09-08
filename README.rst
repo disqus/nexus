@@ -50,5 +50,7 @@ Other applications which provide Nexus modules:
 
 * `Gargoyle <https://github.com/disqus/gargoyle>`_
 * `Memcache <https://github.com/dcramer/nexus-memcache>`_
+* `Redis <https://github.com/dcramer/nexus-redis>`_
+* `django-debug-logging <https://github.com/lincolnloop/django-debug-logging>`_
 
 (docs on writing modules coming soon)
