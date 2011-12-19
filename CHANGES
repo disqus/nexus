@@ -1,3 +1,8 @@
+0.2.3
+
+- Ensure on exempt views we still send .
+- Downgrade CSRF ajax to work with older versions of jQuery.
+
 0.2.2
 
 - Update AJAX CSRF set to work against correct origins.
