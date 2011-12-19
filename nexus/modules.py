@@ -7,6 +7,7 @@ import logging
 import os
 import thread
 
+
 class NexusModule(object):
     # base url (pattern name) to show in navigation
     home_url = None
@@ -20,7 +21,7 @@ class NexusModule(object):
 
     # list of active sites within process
     _globals = {}
-    
+
     def __init__(self, site, category=None, name=None, app_name=None):
         self.category = category
         self.site = site
@@ -46,11 +47,11 @@ class NexusModule(object):
         if ident not in cls._globals:
             cls._globals[ident] = {}
         cls._globals[ident][key] = value
-    
+
     @classmethod
     def get_global(cls, key):
         return cls._globals.get(thread.get_ident(), {}).get(key)
-    
+
     @classmethod
     def get_request(cls):
         """
@@ -85,7 +86,7 @@ class NexusModule(object):
         if 'extra_permission' not in kwargs:
             kwargs['extra_permission'] = self.permission
         return self.site.as_view(*args, **kwargs)
-    
+
     def get_context(self, request):
         title = self.get_title()
         return {
@@ -93,7 +94,7 @@ class NexusModule(object):
             'module_title': title,
             'trail_bits': self.get_trail(request),
         }
-    
+
     def get_namespace(self):
         return hashlib.md5(self.__class__.__module__ + '.' + self.__class__.__name__).hexdigest()
 
@@ -120,18 +121,18 @@ class NexusModule(object):
         return [
             (self.get_title(), self.get_home_url(request)),
         ]
-        
+
     def get_home_url(self, request):
         if self.home_url:
             if self.app_name:
                 home_url_name = '%s:%s' % (self.app_name, self.home_url)
             else:
                 home_url_name = self.home_url
-                
+
             home_url = reverse(home_url_name, current_app=self.name)
         else:
             home_url = None
-            
+
         return home_url
-        
+
 
