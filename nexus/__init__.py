@@ -25,7 +25,7 @@ def autodiscover(site=None):
     Auto-discover INSTALLED_APPS nexus.py modules and fail silently when
     not present. This forces an import on them to register any api bits they
     may want.
-    
+
     Specifying ``site`` will register all auto discovered modules with the new site.
     """
     # Bail out if autodiscover didn't finish loading from a previous call so
@@ -75,9 +75,9 @@ def autodiscover(site=None):
         import_module("%s.nexus_modules" % app)
     # # load builtins
     # from gargoyle.builtins import *
-    
+
     if site:
         globals()['site'] = orig_site
-    
+
     # autodiscover was successful, reset loading flag.
     LOADING = False
