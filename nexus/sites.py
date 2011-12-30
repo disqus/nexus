@@ -242,13 +242,16 @@ class NexusSite(object):
         response["Content-Length"] = len(contents)
         return response
 
-    def login(self, request):
+    def login(self, request, form_class=None):
         "Login form"
         from django.contrib.auth import login as login_
         from django.contrib.auth.forms import AuthenticationForm
 
+        if form_class is None:
+            form_class = AuthenticationForm
+
         if request.POST:
-            form = AuthenticationForm(request, request.POST)
+            form = form_class(request, request.POST)
             if form.is_valid():
                 login_(request, form.get_user())
                 request.session.save()
@@ -256,7 +259,7 @@ class NexusSite(object):
             else:
                 request.session.set_test_cookie()
         else:
-            form = AuthenticationForm(request)
+            form = form_class(request)
             request.session.set_test_cookie()
 
         return self.render_to_response('nexus/login.html', {
