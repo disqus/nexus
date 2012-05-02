@@ -41,6 +41,8 @@ Now you'll want to include it within your ``urls.py``::
 	    ('^nexus/', include(nexus.site.urls)),
 	)
 
+By default Nexus requires django.contrib.auth and django.contrib.sessions. If you are using a custom auth system you can skip these requirements by using the setting ``NEXUS_SKIP_INSTALLED_APPS_REQUIREMENTS = True`` in your django settings.
+
 Modules
 =======
 
