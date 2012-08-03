@@ -54,5 +54,6 @@ Other applications which provide Nexus modules:
 * `Memcache <https://github.com/dcramer/nexus-memcache>`_
 * `Redis <https://github.com/dcramer/nexus-redis>`_
 * `django-debug-logging <https://github.com/lincolnloop/django-debug-logging>`_
+* `Django-Experiments <https://github.com/mixcloud/django-experiments>`_
 
 (docs on writing modules coming soon)
