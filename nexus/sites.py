@@ -125,7 +125,7 @@ class NexusSite(object):
         def inner(request, *args, **kwargs):
             if not self.has_permission(request, extra_permission):
                 # show login pane
-                return self.login(request, *args, **kwargs)
+                return self.login(request)
             return view(request, *args, **kwargs)
 
         # Mark it as never_cache
