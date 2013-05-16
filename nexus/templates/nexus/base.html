@@ -1,4 +1,4 @@
-{% load nexus_helpers %}
+{% load nexus_helpers %}{% load url from future %}
 <!DOCTYPE html>
 
 <html>
@@ -35,7 +35,7 @@
         <div id="header">
             <div class="wrapper">
                 <h1>
-                    <a href="{% url nexus:index %}">
+                    <a href="{% url 'nexus:index' %}">
                         <img src="{% nexus_media_prefix %}/nexus/img/nexus_logo.png" alt="" height="106" width="107"/>
                         Nexus
                     </a>
@@ -43,7 +43,7 @@
                 <h2>{% block heading %}{% if module_title %}{{ module_title }}{% endif %}{% endblock %}</h2>
                 <ul class="nav" id="account">
                     {% if request.user.is_authenticated %}
-                        <li>Logged in as {{ request.user.username }} (<a href="{% url nexus:logout %}">Logout</a>)
+                        <li>Logged in as {{ request.user.username }} (<a href="{% url 'nexus:logout' %}">Logout</a>)
                     {% endif %}
                 </ul>
             </div>
@@ -66,7 +66,7 @@
                     {% endif %}
                     {% block breadcrumbs %}
                         <ul id="breadcrumbs">
-                            <li><a href="{% url nexus:index %}">Nexus</a></li>
+                            <li><a href="{% url 'nexus:index' %}">Nexus</a></li>
                             {% block breadcrumb_bits %}
                                 {% for title, link in trail_bits %}
                                     <li><a href="{{ link }}">{{ title }}</a></li>
