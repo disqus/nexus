@@ -17,10 +17,10 @@ class mytest(test):
 
 setup(
     name='nexus',
-    version='0.2.3',
-    author='David Cramer',
-    author_email='dcramer@gmail.com',
-    url='http://github.com/dcramer/nexus',
+    version='0.3.0',
+    author='Disqus',
+    author_email='opensource@disqus.com',
+    url='http://github.com/disqus/nexus',
     description = 'An extendable admin interface',
     packages=find_packages(),
     zip_safe=False,
