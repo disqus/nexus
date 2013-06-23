@@ -2,5 +2,4 @@
 *.egg-info/
 .DS_Store
 dist/
-build/
-.project
+build
