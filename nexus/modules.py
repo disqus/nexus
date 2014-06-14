@@ -5,7 +5,12 @@ import hashlib
 import inspect
 import logging
 import os
-import thread
+
+# import thread lib from py3k or 2
+try:
+    import _thread as thread
+except ImportError:
+    import thread
 
 
 class NexusModule(object):

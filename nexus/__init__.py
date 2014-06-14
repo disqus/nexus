@@ -6,7 +6,7 @@ Nexus
 try:
     VERSION = __import__('pkg_resources') \
         .get_distribution('nexus').version
-except Exception, e:
+except Exception:
     VERSION = 'unknown'
 
 # XXX: code based on django.contrib.admin auto discovery
