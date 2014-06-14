@@ -5,7 +5,7 @@ import hashlib
 import inspect
 import logging
 import os
-import thread
+import _thread
 
 
 class NexusModule(object):
