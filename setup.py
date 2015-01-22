@@ -17,7 +17,7 @@ class mytest(test):
 
 setup(
     name='nexus',
-    version='0.3.0',
+    version='0.3.1',
     author='Disqus',
     author_email='opensource@disqus.com',
     url='http://github.com/disqus/nexus',
