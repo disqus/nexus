@@ -1,6 +1,7 @@
 NOTICE: Deprecated
 ------------------
-This project is deprecated and no longer actively maintained by Disqus.
+
+This project is deprecated and no longer actively maintained by `Disqus <https://disqus.com/>`_. However there is a fork being maintained by YPlan at `github.com/YPlan/nexus <https://github.com/YPlan/nexus>`_.
 
 Nexus
 -----
